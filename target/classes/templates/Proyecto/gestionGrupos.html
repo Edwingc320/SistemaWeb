@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gestion de Grupos</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@300;500;700&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+      <!-- Incluir Bootstrap CSS (versión 5) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Incluir Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!--PDF-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+
+    
+    <!-- Incluir Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Incluir html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Incluir Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+        /* Estilos personalizados para las pestañas */
+    #tabContainer {
+      margin-top: 20px;
+      border-bottom: 2px solid #dee2e6;
+    }
+    .tab {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-right: 2px;
+      cursor: pointer;
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-bottom: none;
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      font-weight: 500;
+      color: #495057;
+    }
+
+
+
+      @media print {
+        table { 
+          page-break-inside: auto; 
+        }
+        tr { 
+          page-break-inside: avoid; 
+          page-break-after: auto; 
+        }
+        thead { 
+          display: table-header-group; 
+        }
+        tfoot { 
+          display: table-footer-group; 
+        }
+      }
+      
+      
+    .tab.active {
+      background-color: #ffffff;
+      color: #212529;
+      font-weight: 600;
+      border-bottom: 2px solid #ffffff;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      border-top: none;
+      border-bottom-left-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+      margin-bottom: 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .mi-seccion {
+        break-before: always;
+      }
+      
+    /* Estilos para el select y contenedores */
+    .select-container {
+      margin: 20px 0;
+    }
+    /* Indicador de loading */
+    #loading {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    
+
+      .tab { display: inline-block; padding: 10px; background: #e9ecef; margin-right: 5px; cursor: pointer; }
+      .tab.active { background: #0d6efd; color: #fff; }
+      .tab-content { display: none; padding: 10px; }
+      .tab-content.active { display: block; }
+      .hidden { display: none !important; }
+
+    </style>
+</head>
+
+<body>
+ <!-- Incluir Bootstrap Bundle con Popper -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    
+ <script>
+   // VARIABLES GLOBALES
+   function mostrarValor(valor) {
+     return (valor === 0) ? "NA" : (valor || '');
+   }
+   const filasEstudiantes = {};
+   const materiasCargadas = [];
+   // Objeto para almacenar los nombres de las materias: { idMateria: "Nombre de la Materia" }
+   const materiaNombres = {};
+
+   // CARGA DE GRUPOS POR SEMESTRE
+   async function cargarGruposPorSemestre() {
+     const idSemestre = document.getElementById('idSemestre').value;
+     const grupoSelect = document.getElementById('idGrupo');
+     grupoSelect.innerHTML = '<option value="">Selecciona un grupo</option>';
+     if (!idSemestre) return;
+     try {
+       const response = await fetch(`/api/gruposPorSemestre?idSemestre=${idSemestre}`);
+       if (!response.ok) throw new Error(response.statusText);
+       const grupos = await response.json();
+       grupos.forEach(grupo => {
+         grupoSelect.innerHTML += `<option value="${grupo.idGrupo}">${grupo.nombre}</option>`;
+       });
+     } catch (error) {
+       console.error('Error al cargar grupos:', error);
+     }
+   }
+
+   // VISTA POR PESTAÑAS: Crea una pestaña por cada materia y pestañas extra para "Todas las Materias" e "Índice de Reprobación/Aprobación"
+   async function cargarMateriasPorGrupoTabs() {
+     console.log("cargarMateriasPorGrupoTabs");
+     const idGrupo = document.getElementById('idGrupo').value;
+     const tabContainer = document.getElementById('tabContainer');
+     const tabContentContainer = document.getElementById('tabContentContainer');
+     tabContainer.innerHTML = ''; // Limpiar pestañas anteriores
+     tabContentContainer.innerHTML = ''; // Limpiar contenido anterior
+     if (!idGrupo) return;
+     try {
+       const response = await fetch(`/api/materias/por-grupo/${idGrupo}`);
+       if (!response.ok) throw new Error(response.statusText);
+       const materias = await response.json();
+       materiasCargadas.length = 0;
+       // Almacenar nombres de materias y crear pestañas
+       materias.forEach((materia, index) => {
+         materiasCargadas.push(materia.idMateria);
+         materiaNombres[materia.idMateria] = materia.materiaDefecto.nombre; // Almacena el nombre de la materia
+
+         // Pestaña de la materia
+         const tab = document.createElement('div');
+         tab.className = 'tab' + (index === 0 ? ' active' : '');
+         tab.textContent = materia.materiaDefecto.nombre;
+         tab.onclick = () => cambiarPestana(index);
+         tabContainer.appendChild(tab);
+         // Contenido de la materia: tabla de calificaciones, botón de PDF y gráfica de picos
+         const tabContent = document.createElement('div');
+         tabContent.className = 'tab-content' + (index === 0 ? ' active' : '');
+         tabContent.id = `tabContent${materia.idMateria}`;
+         tabContent.innerHTML = `
+           <button class="btn btn-primary mb-3" onclick="generarReportePDFPorPestana('tabContent${materia.idMateria}')">
+             Generar PDF de esta pestaña
+           </button>
+           <table class="table table-bordered table-striped">
+             <thead class="table-dark">
+               <tr>
+                 <th>No</th>
+                 <th>Matrícula</th>
+                 <th>Estudiante</th>
+                 <th style="color:red;">I</th>
+                 <th style="color:red;">II</th>
+                 <th style="color:red;">III</th>
+                 <th style="font-weight:bold;">CAL</th>
+                 <th>R1</th>
+                 <th>R2</th>
+                 <th>R3</th>
+                 <th style="font-weight:bold;">CAL</th>
+                 <th>Desempeño</th>
+                 <th>Comentario</th>
+               </tr>
+             </thead>
+             <tbody id="cuerpoTabla${materia.idMateria}"></tbody>
+           </table>
+           <div class="mt-4">
+             <canvas id="chartMateria${materia.idMateria}" style="max-width:600px;" width="600" height="400"></canvas>
+           </div>
+         `;
+         tabContentContainer.appendChild(tabContent);
+       });
+       // Pestaña extra para "Todas las Materias"
+       const tabAll = document.createElement('div');
+       tabAll.className = 'tab';
+       tabAll.textContent = "Todas las Materias";
+       tabAll.onclick = () => cambiarPestana(materias.length);
+       tabContainer.appendChild(tabAll);
+       const tabContentAll = document.createElement('div');
+       tabContentAll.className = 'tab-content';
+       tabContentAll.id = 'tabContentTodasMaterias';
+       tabContentAll.innerHTML = `
+         <button class="btn btn-primary mb-3" onclick="generarReportePDFPorPestana('tabContentTodasMaterias')">
+           Generar PDF de Todas las Materias
+         </button>
+         <!-- Aquí se insertará la tabla consolidada -->
+       `;
+       tabContentContainer.appendChild(tabContentAll);
+
+       // Pestaña extra para "Índice de Reprobación/Aprobación"
+       const tabIndice = document.createElement('div');
+       tabIndice.className = 'tab';
+       tabIndice.textContent = "Índice de Reprobación/Aprobación";
+       tabIndice.onclick = () => cambiarPestana(materias.length + 1);
+       tabContainer.appendChild(tabIndice);
+       const tabContentIndice = document.createElement('div');
+       tabContentIndice.className = 'tab-content';
+       tabContentIndice.id = 'tabContentIndices';
+       tabContentIndice.innerHTML = `
+         <button class="btn btn-primary mb-3" onclick="generarReportePDFPorPestana('tabContentIndices')">
+           Generar PDF de Índice de Reprobación/Aprobación
+         </button>
+         <h3>Estadísticas de Reprobación y Aprobación</h3>
+         <table class="table table-bordered">
+           <thead>
+             <tr>
+               <th>Materia</th>
+               <th>Total Alumnos</th>
+               <th>Reprobados</th>
+               <th>% Reprobación</th>
+               <th>Aprobados</th>
+               <th>% Aprobación</th>
+             </tr>
+           </thead>
+           <tbody id="tablaReprobacion"></tbody>
+         </table>
+         <canvas id="graficaIndices" style="max-width:600px;" width="600" height="400"></canvas>
+         <hr>
+         <h4>Distribución de Calificaciones por Materia</h4>
+         <div class="mb-3">
+           <label for="materiaSelectGrafica">Selecciona una materia:</label>
+           <select id="materiaSelectGrafica" class="form-select" onchange="handleMateriaGraficaChange()">
+             <option value="">Selecciona una materia</option>
+           </select>
+         </div>
+         <canvas id="graficaCalificacionesPorMateria" style="max-width:600px;" width="600" height="400"></canvas>
+       `;
+       tabContentContainer.appendChild(tabContentIndice);
+
+       // Llenar el select para la gráfica de distribución de calificaciones
+       const materiaSelect = document.getElementById('materiaSelectGrafica');
+       materiaSelect.innerHTML = '<option value="">Selecciona una materia</option>';
+       materias.forEach(materia => {
+         materiaSelect.innerHTML += `<option value="${materia.idMateria}">${materia.materiaDefecto.nombre}</option>`;
+       });
+
+       // Cargar calificaciones individuales para cada materia
+       for (const materia of materias) {
+         await cargarCalificacionesPorMateria(idGrupo, materia.idMateria);
+       }
+     } catch (error) {
+       console.error('Error al cargar materias (Tabs):', error);
+     }
+   }
+
+   async function cargarCalificacionesPorMateria(idGrupo, idMateria) {
+     if (!idGrupo || !idMateria) {
+       alert("Por favor, selecciona un grupo y una materia.");
+       return;
+     }
+     document.getElementById('loading').style.display = 'block';
+     const cuerpoTabla = document.getElementById(`cuerpoTabla${idMateria}`);
+     try {
+       const response = await fetch(`/por-materia/${idMateria}`);
+       if (!response.ok) throw new Error(`Error en la respuesta: ${response.statusText}`);
+       const calificaciones = await response.json();
+       let contadorFila = 1;
+       cuerpoTabla.innerHTML = ''; // Limpiar contenido anterior
+       calificaciones.forEach(calif => {
+         const fila = document.createElement('tr');
+         fila.innerHTML = `
+           <td>${contadorFila}</td>
+           <td>${calif.matricula}</td>
+           <td>${calif.nombreAlumno} ${calif.apellidoPaterno} ${calif.apellidoMaterno}</td>
+           <td>${mostrarValor(calif.corte1)}</td>
+           <td>${mostrarValor(calif.corte2)}</td>
+           <td>${mostrarValor(calif.corte3)}</td>
+           <td>${calif.calificacionOrdinaria}</td>
+           <td>${mostrarValor(calif.recuperacion1)}</td>
+           <td>${mostrarValor(calif.recuperacion2)}</td>
+           <td>${mostrarValor(calif.recuperacion3)}</td>
+           <td>${calif.calificacionOrdinariaR}</td>
+           <td>${calif.desempeno}</td>
+           <td>${calif.comentario}</td>
+         `;
+         cuerpoTabla.appendChild(fila);
+         contadorFila++;
+       });
+       // Generar la gráfica de picos para esta materia (dos series: Ordinaria y Recuperación)
+       crearGraficaPicosPorMateria(idMateria, calificaciones);
+     } catch (error) {
+       console.error('Error al cargar calificaciones (Tabs):', error);
+       cuerpoTabla.innerHTML = "<tr><td colspan='13'>Error al obtener calificaciones.</td></tr>";
+     } finally {
+       document.getElementById('loading').style.display = 'none';
+     }
+   }
+
+   // VISTA CONSOLIDADA: Tabla de "Todas las Materias" (manteniendo scroll)
+   async function cargarTodasLasMateriasPorGrupo() {
+     console.log("cargarTodasLasMateriasPorGrupo");
+     const idGrupo = document.getElementById('idGrupo').value;
+     const tabContentAll = document.getElementById('tabContentTodasMaterias');
+     tabContentAll.innerHTML = ''; // Limpiar contenido anterior
+     if (!idGrupo) return;
+     // Reiniciar filas consolidadas
+     for (const key in filasEstudiantes) {
+       if (filasEstudiantes.hasOwnProperty(key)) {
+         delete filasEstudiantes[key];
+       }
+     }
+     try {
+       const materiasResponse = await fetch(`/api/materias/por-grupo/${idGrupo}`);
+       if (!materiasResponse.ok) throw new Error(materiasResponse.statusText);
+       const materias = await materiasResponse.json();
+       materiasCargadas.length = 0;
+       materias.forEach(materia => {
+         materiasCargadas.push(materia.idMateria);
+       });
+       let encabezados = `<tr class="table-dark">
+                               <th rowspan='3'>No</th>
+                               <th rowspan='3'>Matrícula</th>
+                               <th rowspan='3'>Estudiante</th>`;
+       materias.forEach(materia => {
+         encabezados += `<th colspan='8' class='materia' onclick="toggleCalificaciones('${materia.idMateria}')">${materia.materiaDefecto.nombre}</th>`;
+       });
+       encabezados += `<th rowspan='3'>PROM GRAL</th>
+                       <th rowspan='3'>NIVEL DE DESEMPEÑO</th>
+                       </tr>`;
+       encabezados += `<tr class="table-secondary">`;
+       materias.forEach(() => {
+         encabezados += `<th colspan='4'>ORDINARIAS</th>
+                           <th colspan='4'>RECUPERACIONES</th>`;
+       });
+       encabezados += `</tr>`;
+       encabezados += `<tr class="table-secondary">`;
+       materias.forEach(() => {
+         encabezados += `<th style="color:red;">I</th>
+                           <th style="color:red;">II</th>
+                           <th style="color:red;">III</th>
+                           <th style="font-weight:bold;">CAL</th>
+                           <th>R1</th>
+                           <th>R2</th>
+                           <th>R3</th>
+                           <th style="font-weight:bold;">CAL</th>`;
+       });
+       encabezados += `</tr>`;
+   
+       // Se incluyen dos contenedores de scroll: uno arriba y otro abajo
+       tabContentAll.innerHTML = `
+         <button class="btn btn-primary mb-3" onclick="generarReportePDFPorPestana('tabContentTodasMaterias')">
+           Generar PDF de Todas las Materias
+         </button>
+         <div id="scrollbarContainerTop" style="overflow-x: auto; height: 20px; border: 1px solid #dee2e6; margin-bottom: 5px;">
+           <div id="dummyScrollTop" style="height: 1px; width: 2000px;"></div>
+         </div>
+         <div class="table-responsive" id="tableContainer">
+           <table class="table table-bordered table-hover table-striped">
+             <thead>${encabezados}</thead>
+             <tbody id="cuerpoTablaConsolidado"></tbody>
+           </table>
+         </div>
+         <div id="scrollbarContainerBottom" style="overflow-x: auto; height: 20px; border: 1px solid #dee2e6; margin-top: 5px;">
+           <div id="dummyScrollBottom" style="height: 1px; width: 2000px;"></div>
+         </div>
+       `;
+   
+       // Obtener los contenedores de scroll y la tabla
+       const scrollbarContainerTop = document.getElementById("scrollbarContainerTop");
+       const scrollbarContainerBottom = document.getElementById("scrollbarContainerBottom");
+       const tableContainer = document.getElementById("tableContainer");
+       const dummyScrollTop = document.getElementById("dummyScrollTop");
+       const dummyScrollBottom = document.getElementById("dummyScrollBottom");
+   
+       // Sincronizar scroll: al desplazar cualquiera de los 3 contenedores se actualizan los demás
+       scrollbarContainerTop.addEventListener("scroll", function() {
+         tableContainer.scrollLeft = scrollbarContainerTop.scrollLeft;
+         scrollbarContainerBottom.scrollLeft = scrollbarContainerTop.scrollLeft;
+       });
+       scrollbarContainerBottom.addEventListener("scroll", function() {
+         tableContainer.scrollLeft = scrollbarContainerBottom.scrollLeft;
+         scrollbarContainerTop.scrollLeft = scrollbarContainerBottom.scrollLeft;
+       });
+       tableContainer.addEventListener("scroll", function() {
+         scrollbarContainerTop.scrollLeft = tableContainer.scrollLeft;
+         scrollbarContainerBottom.scrollLeft = tableContainer.scrollLeft;
+       });
+       
+       // Función para ajustar el ancho de dummyScroll (ambos)
+       const adjustDummyScrollWidth = () => {
+         const tableWidth = tableContainer.scrollWidth;
+         dummyScrollTop.style.width = tableWidth + "px";
+         dummyScrollBottom.style.width = tableWidth + "px";
+       };
+       adjustDummyScrollWidth();
+       const observer = new MutationObserver(adjustDummyScrollWidth);
+       observer.observe(tableContainer, { childList: true, subtree: true });
+   
+       // Cargar las calificaciones consolidadas de cada materia
+       for (const materia of materias) {
+         await cargarCalificacionesPorGrupo(idGrupo, materia.idMateria, materias.length);
+       }
+     } catch (error) {
+       console.error('Error al cargar la tabla consolidada:', error);
+     }
+   }
+
+   document.addEventListener("DOMContentLoaded", function () {
+    const tabTodasMaterias = document.getElementById("tabTodasMaterias"); // ID de la pestaña (ajústalo si es diferente)
+    const scrollTop = document.getElementById("scrollbarContainerTop");
+    const scrollBottom = document.getElementById("scrollbarContainerBottom");
+    const tableContainer = document.getElementById("tableContainer");
+
+    if (tabTodasMaterias) {
+        tabTodasMaterias.addEventListener("click", function () {
+            // Mostrar los scrolls cuando la pestaña es seleccionadaz
+            scrollTop.style.display = "block";
+            scrollBottom.style.display = "block";
+        });
+    }
+
+    // Sincronización de los scrolls
+    function syncScroll(source, target) {
+        target.scrollLeft = source.scrollLeft;
+    }
+
+    scrollTop.addEventListener("scroll", function () {
+        syncScroll(scrollTop, tableContainer);
+        syncScroll(scrollTop, scrollBottom);
+    });
+
+    scrollBottom.addEventListener("scroll", function () {
+        syncScroll(scrollBottom, tableContainer);
+        syncScroll(scrollBottom, scrollTop);
+    });
+
+    tableContainer.addEventListener("scroll", function () {
+        syncScroll(tableContainer, scrollTop);
+        syncScroll(tableContainer, scrollBottom);
+    });
+});
+
+
+
+
+
+ 
+   async function cargarCalificacionesPorGrupo(idGrupo, idMateria, totalMaterias) {
+     if (!idGrupo || !idMateria) {
+       alert("Por favor, selecciona un grupo y una materia.");
+       return;
+     }
+     document.getElementById('loading').style.display = 'block';
+     const cuerpoTabla = document.getElementById("cuerpoTablaConsolidado");
+     try {
+       const response = await fetch(`/por-materia/${idMateria}`);
+       if (!response.ok) throw new Error(`Error en la respuesta: ${response.statusText}`);
+       const calificaciones = await response.json();
+       let contadorFila = 1;
+       calificaciones.forEach(calif => {
+         const matricula = calif.matricula;
+         let filaExistente = filasEstudiantes[matricula];
+         if (!filaExistente) {
+           filaExistente = document.createElement('tr');
+           filaExistente.setAttribute('data-matricula', matricula);
+           filaExistente.innerHTML = `
+             <td>${contadorFila}</td>
+             <td>${calif.matricula}</td>
+             <td>${calif.nombreAlumno} ${calif.apellidoPaterno} ${calif.apellidoMaterno}</td>
+           `;
+           // Agregar celdas vacías para cada materia
+           for (let i = 0; i < 8 * totalMaterias; i++) {
+             filaExistente.innerHTML += `<td></td>`;
+           }
+           filaExistente.innerHTML += `<td></td><td></td>`;
+           cuerpoTabla.appendChild(filaExistente);
+           filasEstudiantes[matricula] = filaExistente;
+           contadorFila++;
+         }
+         const celdas = filaExistente.children;
+         const materiaIndex = materiasCargadas.indexOf(idMateria);
+         const baseIndex = 3 + materiaIndex * 8;
+         celdas[baseIndex].textContent = mostrarValor(calif.corte1);
+         celdas[baseIndex + 1].textContent = mostrarValor(calif.corte2);
+         celdas[baseIndex + 2].textContent = mostrarValor(calif.corte3);
+         celdas[baseIndex + 3].textContent = calif.calificacionOrdinaria;
+         celdas[baseIndex + 4].textContent = mostrarValor(calif.recuperacion1);
+         celdas[baseIndex + 5].textContent = mostrarValor(calif.recuperacion2);
+         celdas[baseIndex + 6].textContent = mostrarValor(calif.recuperacion3);
+         celdas[baseIndex + 7].textContent = calif.calificacionOrdinariaR;
+       });
+       // Calcular promedios y niveles de desempeño
+       for (const matricula in filasEstudiantes) {
+         if (filasEstudiantes.hasOwnProperty(matricula)) {
+           const fila = filasEstudiantes[matricula];
+           const promedioGeneral = calcularPromedioGeneral(matricula, totalMaterias);
+           const nivelDesempeño = determinarNivelDesempeño(promedioGeneral);
+           const celdas = fila.children;
+           celdas[3 + totalMaterias * 8].textContent = promedioGeneral;
+           celdas[3 + totalMaterias * 8 + 1].textContent = nivelDesempeño;
+         }
+       }
+     } catch (error) {
+       console.error('Error al cargar calificaciones consolidadas:', error);
+       cuerpoTabla.innerHTML = "<tr><td colspan='15'>Error al obtener calificaciones.</td></tr>";
+     } finally {
+       document.getElementById('loading').style.display = 'none';
+     }
+   }
+
+   function toggleCalificaciones(idMateria) {
+     const filas = document.querySelectorAll('#cuerpoTablaConsolidado tr');
+     const materiaIndex = materiasCargadas.indexOf(idMateria);
+     const baseIndex = 3 + materiaIndex * 8;
+     filas.forEach(fila => {
+       const celdas = fila.children;
+       for (let i = baseIndex; i < baseIndex + 8; i++) {
+         celdas[i].classList.toggle('hidden');
+       }
+     });
+   }
+
+   function calcularPromedioGeneral(matricula, totalMaterias) {
+     const fila = filasEstudiantes[matricula];
+     const celdas = fila.children;
+     let sumaOrdinarias = 0;
+     let contadorOrdinarias = 0;
+     let sumaRecuperaciones = 0;
+     let contadorRecuperaciones = 0;
+     for (let i = 0; i < totalMaterias; i++) {
+       const baseIndex = 3 + i * 8;
+       let calificacionOrdinaria = parseFloat(celdas[baseIndex + 3].textContent.trim());
+       let calificacionRecuperacion = parseFloat(celdas[baseIndex + 7].textContent.trim());
+       if (!isNaN(calificacionOrdinaria) && calificacionOrdinaria > 0) {
+         sumaOrdinarias += calificacionOrdinaria;
+         contadorOrdinarias++;
+       }
+       if (!isNaN(calificacionRecuperacion) && calificacionRecuperacion > 0) {
+         sumaRecuperaciones += calificacionRecuperacion;
+         contadorRecuperaciones++;
+       }
+     }
+     const totalSuma = sumaOrdinarias + sumaRecuperaciones;
+     const totalContador = contadorOrdinarias + contadorRecuperaciones;
+     if (totalContador > 0) {
+       const promedio = totalSuma / totalContador;
+       return promedio.toFixed(2);
+     } else {
+       return 'NA';
+     }
+   }
+
+   function determinarNivelDesempeño(promedio) {
+     if (promedio >= 90) {
+       return 'Excelente';
+     } else if (promedio >= 80) {
+       return 'Bueno';
+     } else if (promedio >= 70) {
+       return 'Regular';
+     } else if (promedio !== 'NA') {
+       return 'Deficiente';
+     } else {
+       return 'NA';
+     }
+   }
+
+   // Función que se llama al cambiar la selección del grupo
+   async function handleSelectChange() {
+     console.log("handleSelectChange");
+     await cargarMateriasPorGrupoTabs();
+     await cargarTodasLasMateriasPorGrupo();
+   }
+
+   // Función para cambiar de pestaña
+   function cambiarPestana(index) {
+     const tabs = document.querySelectorAll('.tab');
+     const tabContents = document.querySelectorAll('.tab-content');
+     tabs.forEach((tab, i) => {
+       tab.classList.toggle('active', i === index);
+        dummyScrollTop.style.display = '';
+     });
+     tabContents.forEach((content, i) => {
+       content.classList.toggle('active', i === index);
+       dummyScrollTop.style.display = '';
+     });
+     // Si se selecciona la pestaña "Índice de Reprobación/Aprobación"
+     if (index === materiasCargadas.length + 1) {
+       dummyScrollTop.style.display = '';
+       cargarDatosReprobacion();
+     }
+   }
+
+   async function cargarDatosReprobacion() {
+    const tablaReprobacion = document.getElementById('tablaReprobacion');
+    tablaReprobacion.innerHTML = ''; // Limpiar la tabla antes de llenarla
+    const dataReprobacion = [];
+    const dataAprobacion = [];
+    const threshold = 60; // Nota mínima para aprobar
+  
+    for (const materiaId of materiasCargadas) {
+      try {
+        const response = await fetch(`/por-materia/${materiaId}`);
+        if (response.ok) {
+          const calificaciones = await response.json();
+          const total = calificaciones.length;
+  
+          // Filtrar las calificaciones válidas según la prioridad de la calificación
+          const reprobados = calificaciones.filter(calif => {
+            // Usar la calificación de recuperación si existe, de lo contrario usar la calificación normal
+            const calificacion = calif.calificacionOrdinariaR || calif.calificacionOrdinaria;
+            return parseFloat(calificacion) < threshold;
+          }).length;
+  
+          const aprobados = total - reprobados;
+          const porcentajeReprobacion = total > 0 ? ((reprobados / total) * 100).toFixed(2) : '0';
+          const porcentajeAprobacion = total > 0 ? ((aprobados / total) * 100).toFixed(2) : '0';
+  
+          const row = document.createElement('tr');
+          // Se muestra el nombre de la materia usando el objeto materiaNombres
+          row.innerHTML = `<td>${materiaNombres[materiaId] || materiaId}</td><td>${total}</td><td>${reprobados}</td><td>${porcentajeReprobacion}%</td><td>${aprobados}</td><td>${porcentajeAprobacion}%</td>`;
+          tablaReprobacion.appendChild(row);
+  
+          dataReprobacion.push({ materia: materiaNombres[materiaId] || materiaId, porcentaje: parseFloat(porcentajeReprobacion) });
+          dataAprobacion.push({ materia: materiaNombres[materiaId] || materiaId, porcentaje: parseFloat(porcentajeAprobacion) });
+        }
+      } catch (error) {
+        console.error(`Error al obtener datos para la materia ${materiaId}:`, error);
+      }
+    }
+  
+    crearGraficaIndices(dataReprobacion, dataAprobacion); // Llamada para generar la gráfica
+  }
+  
+  function crearGraficaIndices(dataReprobacion, dataAprobacion) {
+    const canvas = document.getElementById('graficaIndices');
+    
+    // Establecer el tamaño dinámicamente
+    const canvasWidth = 450;  // Puedes modificar estos valores según tus necesidades
+    const canvasHeight = 220; // Puedes modificar estos valores según tus necesidades
+    
+    canvas.width = canvasWidth;  // Ancho de la gráfica
+    canvas.height = canvasHeight; // Alto de la gráfica
+    
+    const ctx = canvas.getContext('2d');
+  
+    const labels = dataReprobacion.map(item => item.materia);
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '% Reprobación',
+            data: dataReprobacion.map(item => item.porcentaje),
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          },
+          {
+            label: '% Aprobación',
+            data: dataAprobacion.map(item => item.porcentaje),
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+  }
+  
+
+   
+
+   // Función para manejar el cambio en el select para la gráfica de distribución de calificaciones
+   async function handleMateriaGraficaChange() {
+     const materiaSelect = document.getElementById('materiaSelectGrafica');
+     const materiaId = materiaSelect.value;
+     if (!materiaId) return;
+     crearGraficaCalificacionesPorMateria(materiaId);
+   }
+
+   async function crearGraficaCalificacionesPorMateria(materiaId) {
+    try {
+      const response = await fetch(`/por-materia/${materiaId}`);
+      if (response.ok) {
+        const calificaciones = await response.json();
+        
+        // Extraer los valores de las dos series:
+        const notasOrdinarias = calificaciones.map(c => {
+          let val = parseFloat(c.calificacionOrdinaria);
+          return isNaN(val) ? null : val;
+        });
+        const notasRecuperacion = calificaciones.map(c => {
+          let val = parseFloat(c.calificacionOrdinariaR);
+          return isNaN(val) ? null : val;
+        });
+  
+        const canvas = document.getElementById('graficaCalificacionesPorMateria');
+        
+        // Establecer el tamaño dinámicamente
+        const canvasWidth = 400;  // Puedes modificar estos valores según tus necesidades
+        const canvasHeight = 220; // Puedes modificar estos valores según tus necesidades
+        
+        // Usar el ratio de píxeles del dispositivo para mejorar la calidad de la gráfica
+        const devicePixelRatio = window.devicePixelRatio || 1;
+  
+        // Establecer las dimensiones físicas del canvas en el DOM
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+  
+        // Establecer la resolución interna de la gráfica
+        canvas.style.width = `${canvasWidth}px`;
+        canvas.style.height = `${canvasHeight}px`;
+  
+        // Ajustar la resolución interna para mejorar la calidad
+        const ctx = canvas.getContext('2d');
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+  
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: calificaciones.map(c => `${c.nombreAlumno} ${c.apellidoPaterno}`),
+            datasets: [
+              {
+                label: 'Calificación Ordinaria',
+                data: notasOrdinarias,
+                backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+              },
+              {
+                label: 'Calificación Recuperación',
+                data: notasRecuperacion,
+                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+              }
+            ]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100
+              }
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error(`Error al cargar calificaciones para la materia ${materiaId}:`, error);
+    }
+  }
+  
+  
+  function crearGraficaPicosPorMateria(idMateria, calificaciones) {
+    const canvas = document.getElementById(`chartMateria${idMateria}`);
+    
+    // Establecer el tamaño dinámicamente
+    const canvasWidth = 600;  // Puedes modificar estos valores según tus necesidades
+    const canvasHeight = 300; // Puedes modificar estos valores según tus necesidades
+    
+    // Usar el ratio de píxeles del dispositivo para mejorar la calidad de la gráfica
+    const devicePixelRatio = window.devicePixelRatio || 1;
+  
+    // Establecer las dimensiones físicas del canvas en el DOM
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+  
+    // Establecer la resolución interna de la gráfica
+    canvas.style.width = `${canvasWidth}px`;
+    canvas.style.height = `${canvasHeight}px`;
+  
+    // Ajustar la resolución interna para mejorar la calidad
+    const ctx = canvas.getContext('2d');
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  
+    const labels = calificaciones.map(c => `${c.nombreAlumno} ${c.apellidoPaterno}`);
+    const notasOrdinarias = calificaciones.map(c => {
+      let val = parseFloat(c.calificacionOrdinaria);
+      return isNaN(val) ? null : val;
+    });
+    const notasRecuperacion = calificaciones.map(c => {
+      let val = parseFloat(c.calificacionOrdinariaR);
+      return isNaN(val) ? null : val;
+    });
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Calificación Ordinaria',
+            data: notasOrdinarias,
+            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Calificación Recuperación',
+            data: notasRecuperacion,
+            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'x',
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return ` ${context.parsed.y}`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+  
+
+   
+   function generarReportePDFPorPestana(idElemento, nombrePestana) {
+    const element = document.getElementById(idElemento);
+    const dummyScrollTop = document.getElementById('dummyScrollTop');
+
+    // Guardar los estilos originales
+    const originalOverflow = element.style.overflow;
+    const originalWidth = element.style.width;
+    const originalDummyScrollTopDisplay = dummyScrollTop ? dummyScrollTop.style.display : null;
+
+    // Ajustar estilos para la generación del PDF
+    element.style.overflow = 'visible';
+    element.style.width = 'auto';
+
+    // Crear un título dinámico con el nombre de la pestaña
+    const titulo = document.createElement('h1');
+    titulo.textContent = nombrePestana;
+    titulo.style.textAlign = 'center';
+    titulo.style.marginBottom = '20px';
+    element.insertBefore(titulo, element.firstChild);
+
+    // Forzar saltos de página después de cada elemento importante
+    element.querySelectorAll('table, img').forEach(el => {
+        el.style.pageBreakAfter = 'always';
+    });
+
+    // Ajustar tamaño de gráficos en canvas antes de convertirlos
+    element.querySelectorAll('canvas').forEach(canvas => {
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL("image/png", 1.0);
+        
+        // Asegurar que la imagen tenga el mismo tamaño que el canvas
+        img.style.width = "60%";
+        img.style.height = "auto";  // Mantener proporción
+        img.style.pageBreakAfter = 'always';
+
+        // Reemplazar el canvas con la imagen
+        canvas.parentNode.replaceChild(img, canvas);
+    });
+
+    // Obtener dimensiones reales del contenido
+    const rect = element.getBoundingClientRect();
+    const scaleFactor = 2;
+    const customWidthInches = (rect.width * scaleFactor) / 96;
+    const customHeightInches = (rect.height * scaleFactor) / 96;
+
+    // Opciones para html2pdf
+    const opt = {
+        margin: 0.5,
+        filename: `${nombrePestana}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: scaleFactor, scrollY: 0 },
+        jsPDF: { unit: 'in', format: [customWidthInches, customHeightInches], orientation: 'landscape' }
+    };
+
+    // Ocultar botones "Generar PDF"
+    element.querySelectorAll('button').forEach(btn => {
+        if (btn.textContent.includes("Generar PDF")) {
+            btn.style.display = 'none';
+        }
+    });
+
+    // Ocultar el dummyScrollTop si existe
+    if (dummyScrollTop) {
+        dummyScrollTop.style.display = 'none';
+    }
+
+    // Generar PDF
+    setTimeout(() => {
+        html2pdf().from(element).set(opt).save().then(() => {
+            // Restaurar estilos originales después de generar el PDF
+            element.style.overflow = originalOverflow;
+            element.style.width = originalWidth;
+
+            if (dummyScrollTop) {
+                dummyScrollTop.style.display = originalDummyScrollTopDisplay;
+            }
+
+            // Restaurar visibilidad de botones
+            element.querySelectorAll('button').forEach(btn => {
+                if (btn.textContent.includes("Generar PDF")) {
+                    btn.style.display = 'inline-block';
+                }
+            });
+
+            // Eliminar el título añadido
+            element.removeChild(titulo);
+        });
+    }, 500);
+}
+
+
+ 
+
+ // Función para generar el reporte PDF completo (similar a la anterior)
+ function generarReportePDF() {
+   setTimeout(() => {
+     const element = document.getElementById('reporte');
+     html2pdf().from(element).set({
+       margin: 1,
+       filename: 'ReporteCompleto.pdf',
+       image: { type: 'jpeg', quality: 0.98 },
+       html2canvas: { scale: 2, scrollY: 0 },
+       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+     }).save();
+   }, 1000);
+ }
+ </script>
+
+
+    <!-- Header Start -->
+    
+    <!-- Header Start -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 bg-secondary d-none d-lg-block">
+                <a href="index.html" class="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
+                    <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
+                </a>
+            </div>
+            <div class="col-lg-9">
+                <div class="row bg-white border-bottom d-none d-lg-flex">
+                    <div class="col-lg-7 text-left">
+                        <div class="h-100 d-inline-flex align-items-center py-2 px-3">
+                            <i class="fa fa-envelope text-primary mr-2"></i>
+                            <small>correo@example.com</small>
+                        </div>
+                        <div class="h-100 d-inline-flex align-items-center py-2 px-2">
+                            <i class="fa fa-phone-alt text-primary mr-2"></i>
+                            <small>+telefono</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 text-right">
+                        <div class="d-inline-flex align-items-center p-2">
+                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <nav class="navbar navbar-expand-lg bg-white navbar-light p-0">
+                    <a href="index.html" class="navbar-brand d-block d-lg-none">
+                        <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                      <a href="/indexF" class="nav-item nav-link active">Home</a>
+                      <a href="/indexGrupo" class="nav-item nav-link">Añadir Grupos</a>
+                      <a href="/calificacionesGrupo" class="nav-item nav-link">Cargar Calificaciones</a>
+                      <a href="/calificacionesIndividual" class="nav-item nav-link">Gestionar grupos</a> 
+                      <a href="/añadirPeriodo" class="nav-item nav-link">Añadir Periodos</a> 
+                      <a href="/agregarProfesores" class="nav-item nav-link">Añadir Profesores</a>  
+                      
+                      <a href="" class="btn btn-primary mr-3 d-none d-lg-block"></a>
+                  </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+    <!-- Header End -->
+
+
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-page-header" style="margin-bottom: 90px;">
+        <div class="container">
+            <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
+                <h3 class="display-3 text-white text-uppercase">Gestion</h3>
+                <div class="d-inline-flex text-white">
+                    <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
+                    <i class="fa fa-angle-double-right pt-1 px-3"></i>
+                    <p class="m-0 text-uppercase"><a class="text-white" href="#gestion">Gestion</a></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Contact Start -->
+    <div class="container-fluid py-5">
+        <div id="gestion">
+        <div class="container py-5">
+            <div class="text-center pb-2">
+                <h6 class="text-uppercase">Gestionar </h6>
+                <h1 class="mb-4">Seleccione para Gestionar</h1>
+            </div>
+            <div class="row">
+
+                <div id="reporte">
+                    
+                    <div class="container">
+                     
+                      <!-- Menú: Selección de Semestre y Grupo -->
+                      <div class="row select-container mb-3">
+                        <div class="col-md-6 mb-3">
+                          <label for="idSemestre" class="form-label">Selecciona un semestre:</label>
+                          <select id="idSemestre" class="form-select" onchange="cargarGruposPorSemestre()">
+                            <option value="">Selecciona un semestre</option>
+                            <!-- Opciones generadas con Thymeleaf u otro motor -->
+                            <th:block th:each="semestre : ${semestres}">
+                              <option th:value="${semestre.idSemestre}" th:text="${semestre.nombre}"></option>
+                            </th:block>
+                          </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <label for="idGrupo" class="form-label">Selecciona un grupo:</label>
+                          <select id="idGrupo" class="form-select" onchange="handleSelectChange()">
+                            <option value="">Selecciona un grupo</option>
+                          </select>
+                        </div>
+                      </div>
+                      <!-- Contenedor de pestañas -->
+                      <div id="tabContainer" class="mb-3"></div>
+                      <div id="tabContentContainer"></div>
+                      <!-- Elemento de loading -->
+                      <div id="loading" class="text-center" style="display: none;">Cargando...</div>
+                    </div>
+                  </div> 
+
+
+           
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Contact End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-secondary text-white pt-5 px-sm-3 px-md-5" style="margin-top: 90px;">
+        
+        <div class="row mt-5">
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
+                    <i class="fa fa-2x fa-map-marker-alt text-primary"></i>
+                    <div class="ml-3">
+                        <h5 class="text-white">Our Office</h5>
+                        <p class="m-0">Ejido San Felipe del Progreso,San Felipe del Progreso, México</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
+                    <i class="fa fa-2x fa-envelope-open text-primary"></i>
+                    <div class="ml-3">
+                        <h5 class="text-white">Email Us</h5>
+                        <p class="m-0">info@example.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
+                    <i class="fa fa-2x fa-phone-alt text-primary"></i>
+                    <div class="ml-3">
+                        <h5 class="text-white">Call Us</h5>
+                        <p class="m-0">+num  </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-5">
+            <div class="col-lg-3 col-md-6 mb-5">
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="m-0 mt-n2 display-4 text-primary text-uppercase">TESSFP</h1>
+                </a>
+                <p>Tecnologico de San Felipe del Progreso</p>
+                <div class="d-flex justify-content-start mt-4">
+                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h4 class="font-weight-semi-bold text-primary mb-4"> Links Populares</h4>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Attorney</a>
+                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h4 class="font-weight-semi-bold text-primary mb-4">Otros Links</h4>
+                <div class="d-flex flex-column justify-content-start">
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help</a>
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms</a>
+                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy</a>
+                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Site Map</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5">
+                <h4 class="font-weight-semi-bold text-primary mb-4">Conocenos</h4>
+                <p>Click Aqui.</p>
+                <div class="w-100">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-0" style="padding: 25px;" placeholder="Your Email">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary px-4">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row p-4 mt-5 mx-0" style="background: rgba(256, 256, 256, .05);">
+            <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                <p class="m-0 text-white">&copy; <a class="font-weight-bold" href="#">Your Site Name</a>. All Rights Reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-right">
+                <p class="m-0 text-white">Designed by <a class="font-weight-bold" href="https://htmlcodex.com">HTML Codex</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary px-3 back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="mail/contact.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
