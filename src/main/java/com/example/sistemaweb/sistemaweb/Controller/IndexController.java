@@ -53,7 +53,7 @@ public class IndexController {
 
     @GetMapping("/index")
     public String index() {
-        return "Proyecto/index";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
+        return "index";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
     }
 
     @GetMapping("/agregarProfesores")
