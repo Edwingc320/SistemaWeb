@@ -1,12 +1,12 @@
+# Etapa 1: Compilar la app
+FROM maven:3.8.7-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Usar la imagen oficial de OpenJDK
+# Etapa 2: Crear imagen final con el JAR
 FROM openjdk:17-jdk-slim
-
-# Copiar el archivo JAR de la aplicación a la imagen
-COPY target/sistemaweb-0.0.1-SNAPSHOT.jar SistemaWeb.jar
-
-# Exponer el puerto 8080
+WORKDIR /app
+COPY --from=build /app/target/sistemaweb-0.0.1-SNAPSHOT.jar SistemaWeb.jar
 EXPOSE 8083
-
-# Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "SistemaWeb.jar"]
