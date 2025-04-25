@@ -30,95 +30,23 @@
 
 <body>
 
-
-
-
-    <!-- Header Start -->
-    <!-- Header Start -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 bg-secondary d-none d-lg-block">
-                <a href="index.html" class="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
-                    <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
-                </a>
-            </div>
-            <div class="col-lg-9">
-                <div class="row bg-white border-bottom d-none d-lg-flex">
-                    <div class="col-lg-7 text-left">
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-3">
-                            <i class="fa fa-envelope text-primary mr-2"></i>
-                            <small>correo@example.com</small>
-                        </div>
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-2">
-                            <i class="fa fa-phone-alt text-primary mr-2"></i>
-                            <small>+telefono</small>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 text-right">
-                        <div class="d-inline-flex align-items-center p-2">
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <nav class="navbar navbar-expand-lg bg-white navbar-light p-0">
-                    <a href="index.html" class="navbar-brand d-block d-lg-none">
-                        <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
-                    </a>
-                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                            <a href="/indexF" class="nav-item nav-link active">Home</a>
-                            <a href="/indexGrupo" class="nav-item nav-link">Añadir Grupos</a>
-                            <a href="/calificacionesGrupo" class="nav-item nav-link">Cargar Calificaciones</a>
-                            <a href="/calificacionesIndividual" class="nav-item nav-link">Gestionar grupos</a> 
-                            <a href="/añadirPeriodo" class="nav-item nav-link">Añadir Periodos</a> 
-                            <a href="/agregarProfesores" class="nav-item nav-link">Añadir Profesores</a>  
-                            
-                            <a href="" class="btn btn-primary mr-3 d-none d-lg-block"></a>
-                        </div>
-                </nav>
-            </div>
-        </div>
-    </div>
-    <!-- Header End -->
+    <!-- Components Header Start -->
+    <div th:replace="components/header :: header"></div>
     <!-- Header End -->
 
 
-    <!-- Page Header Start -->
-    <div class="container-fluid bg-page-header" style="margin-bottom: 90px;">
-        <div class="container">
-            <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
-                <h3 class="display-3 text-white text-uppercase">AGREGAR GRUPOS</h3>
-                <div class="d-inline-flex text-white">
-                    <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
-                    <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                    <p class="m-0 text-uppercase"><a class="text-white" href="#grupoForm">Agregar</a></p>
-                </div>
-            </div>
-        </div>
+    <!-- Components Page Header Start -->
+    <div th:replace="~{components/pageHeader :: pageHeader(
+        '', 
+        'AÑADIR GRUPO', 
+        'Agregar', 
+        '#grupoForm')}">
     </div>
-    <!-- Page Header End -->
+    <!-- Components Page Header End -->
 
-
-    <!-- Contact Start -->
-    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #f4f4f4;">
-        <div class="form-container p-4 bg-white rounded shadow">
+    <!-- CONTENIDO DE LA PAGINA -->
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="form-container w-100" style="max-width: 93%; background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
             <h1 class="text-center mb-4">Formulario para Agregar Grupo</h1>
             <div id="messageContainer" class="text-center" style="display: none;">
                 <p id="messageText" class="text-success"></p>
@@ -163,111 +91,22 @@
                 </table>
             </div>
             
-            <button id="crearGrupoBtn" type="submit" class="btn btn-success w-100 mt-3">Crear Grupo</button>
-            <button id="agregarMateriasBtn" type="button" class="btn btn-primary w-100 mt-3">Agregar Materias</button>
+            <button id="crearGrupoBtn" type="submit" class="btn btn-secondary w-100 mt-3">Crear Grupo</button>
+            <button id="agregarMateriasBtn" type="button" class="btn btn-secondary w-100 mt-3 ">Agregar Materias</button>
         </form>
         </div>
     </div>
-    
-    
     <style>
         body {
             background-color: #f4f4f4;
         }
     </style>
-    
+    <!-- CONTENIDO End -->
 
 
     
-    <!-- Contact End -->
-
-
-    <!-- Footer Start -->
-    <div class="container-fluid bg-secondary text-white pt-5 px-sm-3 px-md-5" style="margin-top: 90px;">
-        <div class="row mt-5">
-            <div class="col-lg-4">
-                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
-                    <i class="fa fa-2x fa-map-marker-alt text-primary"></i>
-                    <div class="ml-3">
-                        <h5 class="text-white">Our Office</h5>
-                        <p class="m-0">Ejido San Felipe del Progreso,San Felipe del Progreso, México</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
-                    <i class="fa fa-2x fa-envelope-open text-primary"></i>
-                    <div class="ml-3">
-                        <h5 class="text-white">Email Us</h5>
-                        <p class="m-0">info@example.com</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
-                    <i class="fa fa-2x fa-phone-alt text-primary"></i>
-                    <div class="ml-3">
-                        <h5 class="text-white">Call Us</h5>
-                        <p class="m-0">+num  </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row pt-5">
-            <div class="col-lg-3 col-md-6 mb-5">
-                <a href="index.html" class="navbar-brand">
-                    <h1 class="m-0 mt-n2 display-4 text-primary text-uppercase">TESSFP</h1>
-                </a>
-                <p>Tecnologico de San Felipe del Progreso</p>
-                <div class="d-flex justify-content-start mt-4">
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-semi-bold text-primary mb-4"> Links Populares</h4>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Attorney</a>
-                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-semi-bold text-primary mb-4">Otros Links</h4>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy</a>
-                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Site Map</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-semi-bold text-primary mb-4">Conocenos</h4>
-                <p>Click Aqui.</p>
-                <div class="w-100">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-0" style="padding: 25px;" placeholder="Your Email">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row p-4 mt-5 mx-0" style="background: rgba(256, 256, 256, .05);">
-            <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">&copy; <a class="font-weight-bold" href="#">Your Site Name</a>. All Rights Reserved.</p>
-            </div>
-            <div class="col-md-6 text-center text-md-right">
-                <p class="m-0 text-white">Designed by <a class="font-weight-bold" href="https://htmlcodex.com">HTML Codex</a></p>
-            </div>
-        </div>
-    </div>
+    <!-- Components Footer Start -->
+    <div th:replace="components/footer :: footer"></div>
     <!-- Footer End -->
 
 
@@ -297,229 +136,172 @@
 
 
     
-
+    <!-- Script para manejar el formulario de Grupos -->
+    
     <script>
         // Ocultar el botón de agregar materias
         document.getElementById("agregarMateriasBtn").style.display = "none";
         let grupoId = null; // Variable para almacenar el ID del grupo
+      
         document.getElementById("grupoForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevenir el envío tradicional del formulario
-
-            
-
-            // Obtener datos del formulario
-            const nombreGrupo = document.getElementById("nombreGrupo").value.trim();
-            const semestre = document.getElementById("semestre").value;
-            const periodo = document.getElementById("periodo").value;
-
-            if (!nombreGrupo || !semestre || !periodo) {
-                alert("Por favor, completa todos los campos.");
-                return;
+          event.preventDefault(); // Prevenir el envío tradicional del formulario
+      
+          // Obtener datos del formulario
+          const nombreGrupo = document.getElementById("nombreGrupo").value.trim();
+          const semestre = document.getElementById("semestre").value;
+          const periodo = document.getElementById("periodo").value;
+      
+          if (!nombreGrupo || !semestre || !periodo) {
+            alert("Por favor, completa todos los campos.");
+            return;
+          }
+      
+          // Deshabilitar el botón de envío para evitar múltiples solicitudes
+          const submitButton = event.submitter;
+          submitButton.disabled = true;
+          submitButton.textContent = "Creando grupo...";
+          document.getElementById("crearGrupoBtn").style.display = "none";
+          document.getElementById("nombreGrupo").disabled = true;
+          document.getElementById("semestre").disabled = true;
+          document.getElementById("periodo").disabled = true;
+      
+          // Preparar datos para enviar
+          const formData = new URLSearchParams();
+          formData.append("nombreGrupo", nombreGrupo);
+          formData.append("semestre", semestre);
+          formData.append("periodo", periodo);
+      
+          // Enviar los datos al servidor usando fetch
+          fetch("/grupo/agregarGrupo", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: formData.toString(),
+          })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error al crear el grupo.");
             }
-
-            // Deshabilitar el botón de envío para evitar múltiples solicitudes
-            const submitButton = event.submitter;
-            submitButton.disabled = true;
-            submitButton.textContent = "Creando grupo...";
-            // Ocultar el botón de agregar materias
-            document.getElementById("crearGrupoBtn").style.display = "none";
-            
-
-            document.getElementById("nombreGrupo").disabled = true;
-            document.getElementById("semestre").disabled = true;
-            document.getElementById("periodo").disabled = true;
-
-            // Preparar datos para enviar
-            const formData = new URLSearchParams();
-            formData.append("nombreGrupo", nombreGrupo);
-            formData.append("semestre", semestre);
-            formData.append("periodo", periodo);
-
-            // Enviar los datos al servidor usando fetch
-            fetch("/grupo/agregarGrupo", { 
-            //fetch("/grupo/agregarGrupo", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData.toString(),
-            })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Error al crear el grupo.");
-                        }
-                        return response.text();
-                    })
-
-                    .then((message) => {
-                    // Mostrar mensaje de éxito
-                    const messageContainer = document.getElementById("messageContainer");
-                    const messageText = document.getElementById("messageText");
-                    messageText.textContent = message;
-                    messageContainer.style.display = "block";
-                    grupoId = message.split(":")[1].trim(); // Capturamos el ID del grupo
-                    console.log("GRUPO CREADO EXITOSAMENTE AGREGE LAS MATERIAS :");  // Para depuración
-                    //console.log("ID del grupo creado:", grupoId);  // Para depuración
-                    // Limpiar formulario
-                    //document.getElementById("grupoForm").reset();
-                    // Mostrar el botón de agregar materias
-                    setTimeout(function() {
-                        document.getElementById("agregarMateriasBtn").style.display = "block";
-                    }, 2000); // 2000 milisegundos = 2 segundos
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    alert("Ocurrió un error al crear el grupo.");
-                })
-                .finally(() => {
-                    // Habilitar el botón de envío nuevamente
-                    submitButton.disabled = false;
-                    submitButton.textContent = "Crear Grupo";
-                });
-
-
-
-                ///materias
-
-
-                const periodoId = document.getElementById("periodo").value;
-
-        if (!periodoId) {
+            return response.text();
+          })
+          .then((message) => {
+            // Mostrar mensaje de éxito en pantalla
+            const messageContainer = document.getElementById("messageContainer");
+            const messageText = document.getElementById("messageText");
+            messageText.textContent = message;
+            messageContainer.style.display = "block";
+      
+            // Capturamos el ID del grupo del mensaje devuelto
+            grupoId = message.split(":")[1].trim();
+      
+            // Mostramos confirm con el ID y, si acepta, habilitamos el botón
+            const ok = window.confirm(
+              `Grupo creado exitosamente con el ID: ${grupoId}\n\n` +
+              `Presione “Aceptar” para Agregar Materias.`
+            );
+            if (ok) {
+              document.getElementById("agregarMateriasBtn").style.display = "block";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Ocurrió un error al crear el grupo.");
+          })
+          .finally(() => {
+            // Siempre reactivar el botón de envío
+            submitButton.disabled = false;
+            submitButton.textContent = "Crear Grupo";
+          });
+      
+          // … aquí continúa tu lógica de preparar y enviar materias …
+          // (la mantengo igual a como la tenías)
+          const periodoId = document.getElementById("periodo").value;
+          if (!periodoId) {
             alert("Por favor selecciona un periodo antes de agregar materias.");
             return;
-        }
-        let materias = [];
-        const rows = document.querySelectorAll("#materiasTable tbody tr");
-        rows.forEach(row => {
+          }
+          let materias = [];
+          document.querySelectorAll("#materiasTable tbody tr").forEach(row => {
             const clave = row.cells[1].innerText.trim();
             const profesorSelect = row.querySelector("select");
             const idProfesor = profesorSelect.value;
-
             if (!idProfesor) {
-                alert(`Por favor selecciona un profesor para la materia ${clave}.`);
-                return;
+              alert(`Por favor selecciona un profesor para la materia ${clave}.`);
+              return;
             }
-
-            // Crear un objeto Materia usando los datos
             materias.push({
-                clave: clave, // Clave de la materia
-                periodo: { idPeriodo: parseInt(periodoId) }, // ID del periodo
-                profesor: { idProfesor: parseInt(idProfesor) }  // ID del profesor
+              clave,
+              periodo: { idPeriodo: parseInt(periodoId) },
+              profesor: { idProfesor: parseInt(idProfesor) }
             });
-
-            console.log(`Clave: ${clave}, Periodo: ${periodoId}, Profesor: ${idProfesor}`);
-        });
-
-        // Enviar los datos al servidor
-        if (materias.length > 0) {
+          });
+          if (materias.length > 0) {
             fetch('/agregarMaterias', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(materias)
-                
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(materias)
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                const idMaterias = data.map(materia => materia.idMateria); // Suponiendo que el servidor devuelve los IDs
-                    
-                asignarMateriasAGrupo(grupoId, idMaterias);
+              const idMaterias = data.map(m => m.idMateria);
+              asignarMateriasAGrupo(grupoId, idMaterias);
             })
-            .catch(error => console.error("Error al agregar materias:", error));
-            
-            }
-            /////asignar
-
-
-           
+            .catch(err => console.error("Error al agregar materias:", err));
+          }
         });
-
-
+      
         // Cargar materias según el semestre seleccionado
         document.getElementById("semestre").addEventListener("change", function () {
-            let semestreId = this.value;
-
-            if (semestreId) {
-                fetch(`/materiasPorSemestre?idSemestre=${semestreId}`)
-                    .then(response => response.json())
-                    .then(materias => {
-                        fetch('/api/profesores') // Obtener la lista de profesores
-                            .then(response => response.json())
-                            .then(profesores => {
-                                let tbody = document.querySelector("#materiasTable tbody");
-                                tbody.innerHTML = ""; // Limpiar la tabla
-
-                                materias.forEach(materia => {
-                                    let profesorOptions = profesores.map(profesor => 
-                                        `<option value="${profesor.idProfesor}">${profesor.nombre} ${profesor.apellidoPaterno} ${profesor.apellidoMaterno}</option>`
-                                    ).join("");
-
-                                    let row = `
-                                        <tr>
-                                            <td>${materia.idMateriaDefecto}</td>
-                                            <td>${materia.clave}</td>
-                                            <td>${materia.nombre}</td>
-                                            <td>${materia.semestre.nombre}</td>
-                                            <td>
-                                                <select name="profesor_${materia.idMateriaDefecto}" required>
-                                                    <option value="" disabled selected>Selecciona un profesor</option>
-                                                    ${profesorOptions}
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    `;
-                                    tbody.innerHTML += row;
-                                });
-                            })
-                            .catch(error => console.error("Error al obtener profesores:", error));
-                    })
-                    .catch(error => console.error("Error al obtener materias:", error));
-            }
-        });
-
-
-        document.getElementById("agregarMateriasBtn").addEventListener("click", function () {
-
-            // Deshabilitar el botón al hacer clic
-
-            
-            document.getElementById("agregarMateriasBtn").style.display = "none";
-
-            // Definir la función
-            function asignarMateriasAGrupo() {
-                // Llamar a la ruta que asigna las materias al grupo y bloquear el boton agregarMateriasBtn
-
-                fetch(`/probar-conexion3`, {
-                    method: 'GET',
-                })
-                .then(response => response.text())
-                .then(message => {
-                    alert("Materias asignadas correctamente!");
-                    console.log("Resultado de asignación:", message);
-                    // limpar el formulario y la tabla
-                    document.getElementById("grupoForm").reset();
-                    document.getElementById("materiasTable").querySelector("tbody").innerHTML = "";
-                    // Ocultar el botón de agregar materias
-                    document.getElementById("agregarMateriasBtn").style.display = "none";
-
-                    //Mandar a indexGrupo
-                    window.location.href = "/indexGrupo";
-                })
-                .catch(error => {
-                    console.error("Error al asignar materias:", error);
-                    alert("Ocurrió un error al asignar las materias.");
+          const semestreId = this.value;
+          if (!semestreId) return;
+          fetch(`/materiasPorSemestre?idSemestre=${semestreId}`)
+            .then(r => r.json())
+            .then(materias => fetch('/api/profesores').then(r => r.json())
+              .then(profesores => {
+                const tbody = document.querySelector("#materiasTable tbody");
+                tbody.innerHTML = "";
+                materias.forEach(materia => {
+                  const opts = profesores.map(p =>
+                    `<option value="${p.idProfesor}">${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}</option>`
+                  ).join("");
+                  tbody.innerHTML += `
+                    <tr>
+                      <td>${materia.idMateriaDefecto}</td>
+                      <td>${materia.clave}</td>
+                      <td>${materia.nombre}</td>
+                      <td>${materia.semestre.nombre}</td>
+                      <td>
+                        <select required>
+                          <option value="" disabled selected>Selecciona un profesor</option>
+                          ${opts}
+                        </select>
+                      </td>
+                    </tr>`;
                 });
-            }
-        
-            // Llamar a la función
-            asignarMateriasAGrupo();
+              }))
+            .catch(err => console.error("Error al cargar materias o profesores:", err));
         });
-        
-        
-    </script>
+      
+        // Click en “Agregar Materias”
+        document.getElementById("agregarMateriasBtn").addEventListener("click", function () {
+          this.style.display = "none";
+          fetch(`/probar-conexion3`, { method: 'GET' })
+            .then(r => r.text())
+            .then(msg => {
+              alert("Materias asignadas correctamente!");
+              console.log("Resultado de asignación:", msg);
+              document.getElementById("grupoForm").reset();
+              document.querySelector("#materiasTable tbody").innerHTML = "";
+              window.location.href = "/indexGrupo";
+            })
+            .catch(err => {
+              console.error("Error al asignar materias:", err);
+              alert("Ocurrió un error al asignar las materias.");
+            });
+        });
+      </script>
+      
 
-
+    <!--Fin del Script-->
 
 
 

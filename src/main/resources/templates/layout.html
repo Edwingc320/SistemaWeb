@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:fragment="title">Default Title</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header th:replace="components/header :: header"></header>
+
+    <!-- Navigation -->
+    <nav th:replace="components/navigation :: navigation"></nav>
+
+    <!-- Main Content -->
+    <main>
+        <div th:fragment="content"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="components/footer :: footer"></footer>
+</body>
+</html>

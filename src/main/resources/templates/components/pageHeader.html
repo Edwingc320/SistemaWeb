@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<!-- PageHeader fragment parametrizado -->
+<div th:fragment="pageHeader(imagePath, titleText, breadcrumbText, breadcrumbHref)" 
+     class="container-fluid position-relative"
+     th:style="${imagePath} == '' ? 'background-color:#2F4F4F ; margin-bottom: 90px;' : 'margin-bottom: 90px;'">
+
+    <!-- Imagen de fondo solo si se proporciona una ruta -->
+    <img th:if="${imagePath} != ''"
+         th:src="@{${imagePath}}"
+         alt="Banner"
+         class="position-absolute w-100 h-100 top-0 start-0"#1b2631
+         style="object-fit: cover; z-index: -1;">
+
+    <!-- Contenido sobre la imagen o fondo de color -->
+    <div class="container" style="z-index: 1; position: relative;">
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
+            <h3 class="display-3 text-white text-uppercase" th:text="${titleText}">TÍTULO</h3>
+            <div class="d-inline-flex text-white">
+                <p class="m-0 text-uppercase">
+                    <a class="text-white" href="/indexF">Home</a>
+                </p>
+                <i class="fa fa-angle-double-right pt-1 px-3"></i>
+                <p class="m-0 text-uppercase">
+                    <a class="text-white" th:href="@{${breadcrumbHref}}" th:text="${breadcrumbText}">Texto</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

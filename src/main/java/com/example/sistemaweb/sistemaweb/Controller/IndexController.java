@@ -56,6 +56,11 @@ public class IndexController {
         return "Proyecto/index";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
     }
 
+    @GetMapping("/lay")
+    public String lay() {
+        return "pages/home";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
+    }
+
     @GetMapping("/agregarProfesores")
     public String agregarProfesores() {
         return "Proyecto/agregarProfesor";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates

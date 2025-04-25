@@ -27,71 +27,12 @@
 </head>
 
 <body>
-    <!-- Header Start -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 bg-secondary d-none d-lg-block">
-                <a href="index.html" class="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
-                    <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
-                </a>
-            </div>
-            <div class="col-lg-9">
-                <div class="row bg-white border-bottom d-none d-lg-flex">
-                    <div class="col-lg-7 text-left">
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-3">
-                            <i class="fa fa-envelope text-primary mr-2"></i>
-                            <small>correo@example.com</small>
-                        </div>
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-2">
-                            <i class="fa fa-phone-alt text-primary mr-2"></i>
-                            <small>+telefono</small>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 text-right">
-                        <div class="d-inline-flex align-items-center p-2">
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <nav class="navbar navbar-expand-lg bg-white navbar-light p-0">
-                    <a href="index.html" class="navbar-brand d-block d-lg-none">
-                        <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
-                    </a>
-                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <a href="/indexF" class="nav-item nav-link active">Home</a>
-                        <a href="/indexGrupo" class="nav-item nav-link">Añadir Grupos</a>
-                        <a href="/calificacionesGrupo" class="nav-item nav-link">Cargar Calificaciones</a>
-                        <a href="/calificacionesIndividual" class="nav-item nav-link">Gestionar grupos</a> 
-                        <a href="/añadirPeriodo" class="nav-item nav-link">Añadir Periodos</a> 
-                        <a href="/agregarProfesores" class="nav-item nav-link">Añadir Profesores</a>  
-                        
-                        <a href="" class="btn btn-primary mr-3 d-none d-lg-block"></a>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </div>
+    <!-- Components Header Start -->
+    <div th:replace="components/header :: header"></div>
     <!-- Header End -->
 
 
-        <!-- Carousel Start -->
+     <!-- Carousel Start -->
     <div class="container-fluid p-0 mb-5 pb-5">
         <div id="header-carousel" class="carousel slide carousel-fade" data-ride="carousel">
             <div class="carousel-inner">
@@ -125,103 +66,185 @@
                 </div>
             </a>
         </div>
+
+        <!-- Este botón ahora está fuera del carousel -->
+        <a href="#instructivo"
+        class="btn btn-light position-absolute"
+        style="bottom: 20px; left: 50%; transform: translateX(-50%); opacity: .8; z-index: 10;">
+        ↓ Ver Instrucciones
+        </a>
     </div>
     <!-- Carousel End -->
 
 
-
-
-
-   
-
-       <!-- Footer Start -->
-       <div class="container-fluid bg-secondary text-white pt-5 px-sm-3 px-md-5" style="margin-top: 90px;">
-        <div class="row mt-5">
-            <div class="col-lg-4">
-                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
-                    <i class="fa fa-2x fa-map-marker-alt text-primary"></i>
-                    <div class="ml-3">
-                        <h5 class="text-white">Our Office</h5>
-                        <p class="m-0">Ejido San Felipe del Progreso,San Felipe del Progreso, México</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
-                    <i class="fa fa-2x fa-envelope-open text-primary"></i>
-                    <div class="ml-3">
-                        <h5 class="text-white">Email Us</h5>
-                        <p class="m-0">info@example.com</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="d-flex justify-content-lg-center p-4" style="background: rgba(256, 256, 256, .05);">
-                    <i class="fa fa-2x fa-phone-alt text-primary"></i>
-                    <div class="ml-3">
-                        <h5 class="text-white">Call Us</h5>
-                        <p class="m-0">+num  </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row pt-5">
-            <div class="col-lg-3 col-md-6 mb-5">
-                <a href="index.html" class="navbar-brand">
-                    <h1 class="m-0 mt-n2 display-4 text-primary text-uppercase">TESSFP</h1>
+    <!-- Instructivo debajo del footer -->
+    <div class="container my-4" id="instructivo">
+        <div class="card border-secondary">
+        <div class="card-body">
+            <h5 class="card-title">Instrucciones</h5>
+    
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs mb-3" id="systemStepsTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active"
+                id="home-tab"
+                data-toggle="tab"
+                href="#home"
+                role="tab"
+                aria-controls="home"
+                aria-selected="true">
+                Home
                 </a>
-                <p>Tecnologico de San Felipe del Progreso</p>
-                <div class="d-flex justify-content-start mt-4">
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-lg btn-outline-light btn-lg-square" href="#"><i class="fab fa-instagram"></i></a>
-                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                id="grupo-tab"
+                data-toggle="tab"
+                href="#grupo"
+                role="tab"
+                aria-controls="grupo"
+                aria-selected="false">
+                Crear Grupo
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                id="calificaciones-tab"
+                data-toggle="tab"
+                href="#calificaciones"
+                role="tab"
+                aria-controls="calificaciones"
+                aria-selected="false">
+                Calificaciones Alumnos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                id="gestionar-tab"
+                data-toggle="tab"
+                href="#gestionar"
+                role="tab"
+                aria-controls="gestionar"
+                aria-selected="false">
+                Gestionar “Calificaciones”
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                id="docentes-tab"
+                data-toggle="tab"
+                href="#docentes"
+                role="tab"
+                aria-controls="docentes"
+                aria-selected="false">
+                Asignar Docentes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                id="periodo-tab"
+                data-toggle="tab"
+                href="#periodo"
+                role="tab"
+                aria-controls="periodo"
+                aria-selected="false">
+                Añadir Periodos
+                </a>
+            </li>
+            </ul>
+    
+            <!-- Tab panes -->
+            <div class="tab-content" id="systemStepsTabsContent">
+            <!-- Home -->
+            <div class="tab-pane fade show active"
+                id="home"
+                role="tabpanel"
+                aria-labelledby="home-tab">
+                <ul class="list-group list-group-numbered">
+                <li class="list-group-item">Paso 1. Crear un grupo.</li>
+                <li class="list-group-item">Paso 2. Cargar calificaciones.</li>
+                <li class="list-group-item">Paso 3. Gestionar calificaciones.</li>
+                <li class="list-group-item">Puedes obtener detalles de cada paso en las tarjetas dinamicas superiores.</li>
+                </ul>
             </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-semi-bold text-primary mb-4"> Links Populares</h4>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>About</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Services</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Attorney</a>
-                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
-                </div>
+    
+            <!-- Crear Grupo -->
+            <div class="tab-pane fade"
+                id="grupo"
+                role="tabpanel"
+                aria-labelledby="grupo-tab">
+                <ul class="list-group list-group-numbered">
+                <li class="list-group-item">Selecciona “Añadir Grupos” en el menú.</li>
+                <li class="list-group-item">Rellena Nombre de grupo, Semestre y Periodo.</li>
+                <li class="list-group-item">Se mostrarán las materias del semestre.</li>
+                <li class="list-group-item">Asigna un docente por materia.</li>
+                <li class="list-group-item">Presiona “Crear Grupo” para guardar.</li>
+                </ul>
             </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-semi-bold text-primary mb-4">Otros Links</h4>
-                <div class="d-flex flex-column justify-content-start">
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms</a>
-                    <a class="text-white mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy</a>
-                    <a class="text-white" href="#"><i class="fa fa-angle-right mr-2"></i>Site Map</a>
-                </div>
+    
+            <!-- Calificaciones Alumnos -->
+            <div class="tab-pane fade"
+                id="calificaciones"
+                role="tabpanel"
+                aria-labelledby="calificaciones-tab">
+                <ul class="list-group list-group-numbered">
+                <li class="list-group-item">Selecciona “Añadir Calificaciones” en el menú.</li>
+                <li class="list-group-item">Elige Semestre, Grupo, Materia y Archivo.</li>
+                <li class="list-group-item">Presiona “Subir” para guardar.</li>
+                <li class="list-group-item">Espera a que termine el procesamiento.</li>
+                </ul>
             </div>
-            <div class="col-lg-3 col-md-6 mb-5">
-                <h4 class="font-weight-semi-bold text-primary mb-4">Conocenos</h4>
-                <p>Click Aqui.</p>
-                <div class="w-100">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-0" style="padding: 25px;" placeholder="Your Email">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Sign Up</button>
-                        </div>
-                    </div>
-                </div>
+    
+            <!-- Gestionar “Calificaciones” -->
+            <div class="tab-pane fade"
+                id="gestionar"
+                role="tabpanel"
+                aria-labelledby="gestionar-tab">
+                <ul class="list-group list-group-numbered">
+                <li class="list-group-item">Selecciona “Gestionar Grupo” en el menú.</li>
+                <li class="list-group-item">Elige Semestre y Grupo.</li>
+                <li class="list-group-item">Navega entre pestañas por materia.</li>
+                <li class="list-group-item">Ve gráficos y descarga PDF de cada apartado.</li>
+                </ul>
             </div>
+    
+            <!-- Asignar Docentes -->
+            <div class="tab-pane fade"
+                id="docentes"
+                role="tabpanel"
+                aria-labelledby="docentes-tab">
+                <ul class="list-group list-group-numbered">
+                <li class="list-group-item">Selecciona “Añadir Docentes” en el menú.</li>
+                <li class="list-group-item">Rellena Nombre, Apellidos y Clave.</li>
+                <li class="list-group-item">Presiona “Crear Profesor” para guardar.</li>
+                </ul>
+            </div>
+    
+            <!-- Añadir Periodos -->
+            <div class="tab-pane fade"
+                id="periodo"
+                role="tabpanel"
+                aria-labelledby="periodo-tab">
+                <ul class="list-group list-group-numbered">
+                <li class="list-group-item">Selecciona “Añadir Periodo” en el menú.</li>
+                <li class="list-group-item">Rellena Semestre y Año.</li>
+                <li class="list-group-item">Presiona “Crear Periodo” para guardar.</li>
+                </ul>
+            </div>
+            </div>
+    
         </div>
-        <div class="row p-4 mt-5 mx-0" style="background: rgba(256, 256, 256, .05);">
-            <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">&copy; <a class="font-weight-bold" href="#">Your Site Name</a>. All Rights Reserved.</p>
-            </div>
-            <div class="col-md-6 text-center text-md-right">
-                <p class="m-0 text-white">Designed by <a class="font-weight-bold" href="https://htmlcodex.com">HTML Codex</a></p>
-            </div>
         </div>
     </div>
-    <!-- Footer End -->
+    <!-- Instructivo End -->  
+    
+    <!-- Components Footer Start -->
+         
+   <div th:replace="components/footer :: footer"></div>
+   <!-- Footer End -->
 
+
+    
 
 
     <!-- Back to Top -->
