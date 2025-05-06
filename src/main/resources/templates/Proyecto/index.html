@@ -82,11 +82,15 @@
         <div class="card border-secondary">
         <div class="card-body">
             <h5 class="card-title">Instrucciones</h5>
-    
+            </br>
+            <ul class="card-title">Bienvenido estimado docente este apartado muestra el funcionamiento del sistema</ul>
+            </br>
             <!-- Nav tabs -->
             <ul class="nav nav-tabs mb-3" id="systemStepsTabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active"
+                style="background-color:rgb(255, 31, 31);
+                color: black;"
                 id="home-tab"
                 data-toggle="tab"
                 href="#home"
@@ -98,6 +102,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
+                style="background-color:rgb(219, 232, 38);
+                color: black;"
                 id="grupo-tab"
                 data-toggle="tab"
                 href="#grupo"
@@ -109,6 +115,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
+                style="background-color:rgb(31, 195, 255);
+                color: black;"
                 id="calificaciones-tab"
                 data-toggle="tab"
                 href="#calificaciones"
@@ -120,6 +128,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
+                style="background-color:rgb(255, 31, 165);
+                color: black;"
                 id="gestionar-tab"
                 data-toggle="tab"
                 href="#gestionar"
@@ -131,6 +141,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
+                style="background-color:rgb(31, 255, 132);
+                color: black;"
                 id="docentes-tab"
                 data-toggle="tab"
                 href="#docentes"
@@ -142,6 +154,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
+                style="background-color:rgb(31, 72, 255);
+                color: black;"
                 id="periodo-tab"
                 data-toggle="tab"
                 href="#periodo"
@@ -161,10 +175,19 @@
                 role="tabpanel"
                 aria-labelledby="home-tab">
                 <ul class="list-group list-group-numbered">
-                <li class="list-group-item">Paso 1. Crear un grupo.</li>
-                <li class="list-group-item">Paso 2. Cargar calificaciones.</li>
-                <li class="list-group-item">Paso 3. Gestionar calificaciones.</li>
-                <li class="list-group-item">Puedes obtener detalles de cada paso en las tarjetas dinamicas superiores.</li>
+                    <li class="list-group-item">
+                        <a href="/indexGrupo" class="text-decoration-none">Paso 1. Crear un grupo.</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a href="/calificacionesGrupo" class="text-decoration-none">Paso 2. Cargar calificaciones.</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a href="/calificacionesIndividual" class="text-decoration-none">Paso 3. Gestionar calificaciones.</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a href="#detalles" class="text-decoration-none">Puedes obtener detalles de cada paso en las tarjetas dinámicas superiores.</a>
+                      </li>
+                      
                 </ul>
             </div>
     
@@ -174,7 +197,7 @@
                 role="tabpanel"
                 aria-labelledby="grupo-tab">
                 <ul class="list-group list-group-numbered">
-                <li class="list-group-item">Selecciona “Añadir Grupos” en el menú.</li>
+                <li class="list-group-item ">Selecciona “Añadir Grupos” en el menú.</li>
                 <li class="list-group-item">Rellena Nombre de grupo, Semestre y Periodo.</li>
                 <li class="list-group-item">Se mostrarán las materias del semestre.</li>
                 <li class="list-group-item">Asigna un docente por materia.</li>

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class LeerExcel {
 
+    /* 
     public static void main(String[] args) {
         List<String> estudiantesList = new ArrayList<>();
         List<String> estudiantesAgregarList = new ArrayList<>();
@@ -72,7 +73,7 @@ public class LeerExcel {
         // Mostrar la lista completa de estudiantes formateados
         System.out.println("Estudiantes Formateados: " + estudiantesAgregarList);
     }
-
+    */
     private static String getCellValueAsString(Cell cell) {
         if (cell == null) {
             return "";
