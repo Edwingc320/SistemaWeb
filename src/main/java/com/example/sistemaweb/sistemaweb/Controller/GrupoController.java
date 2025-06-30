@@ -4,23 +4,17 @@ import com.example.sistemaweb.sistemaweb.Entities.*;
 import com.example.sistemaweb.sistemaweb.Repositories.*;
 import com.example.sistemaweb.sistemaweb.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Controller
@@ -30,20 +24,11 @@ public class GrupoController {
     private GrupoService grupoService;
 
     @Autowired
-    private AlumnoService alumnoService;
-
-    @Autowired
     private PeriodoService periodoService;
 
     @Autowired
     private ProfesorService profesorService;
 
-
-    @Autowired
-    private DatosTemporalesService datosTemporalesService;
-
-    @Autowired
-    private AlumnoGrupoRepository alumnoGrupoRepository;
 
     @Autowired
     private MateriaDefectoService materiaDefectoService;
@@ -68,11 +53,6 @@ public class GrupoController {
 
 
 
-    @Autowired
-    private MateriaService materiaService;
-
-    @Autowired
-    private MateriaGrupoService materiaGrupoService;
 
 
 
@@ -305,9 +285,7 @@ public class GrupoController {
     }
     
     */
-    @Autowired
-    private GrupoMateriaService grupoMateriaService;
-
+    
     
     @Autowired
     private MateriaGrupoRepository materiaGrupoRepository;

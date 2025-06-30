@@ -1,32 +1,21 @@
 package com.example.sistemaweb.sistemaweb.Controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 
 import com.example.sistemaweb.sistemaweb.Entities.*;
-import com.example.sistemaweb.sistemaweb.Repositories.*;
 import com.example.sistemaweb.sistemaweb.Services.*;
 
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class CalificacionesController {
@@ -34,8 +23,7 @@ public class CalificacionesController {
     @Autowired
     private CalificacionesService calificacionesService;
 
-    @Autowired
-    private CalificacionesRepository calificacionesRepository;
+  
 
 
     @Autowired
@@ -44,8 +32,7 @@ public class CalificacionesController {
     @Autowired
     private MateriaService materiaService;
 
-    @Autowired
-    private GrupoService grupoService;
+   
 
     @GetMapping("/data")
     public String showData() {
@@ -122,7 +109,10 @@ public class CalificacionesController {
             //model.addAttribute("promedioPorAlumno", promedioPorAlumno);
 
            // return "calificaciones"; // Nombre de la vista HTML
-            return "Proyecto/gestionGrupos"; // Nombre de la vista HTML
+            //return "Proyecto/gestionGrupos"; // Nombre de la vista HTML
+           
+            return "Proyecto/gestionarGrupo"; // Nombre de la vista HTML
+
         }
 
 

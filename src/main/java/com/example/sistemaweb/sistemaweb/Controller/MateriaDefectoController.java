@@ -1,21 +1,12 @@
 package com.example.sistemaweb.sistemaweb.Controller;
 
-import com.example.sistemaweb.sistemaweb.Entities.*;
-import com.example.sistemaweb.sistemaweb.Repositories.*;
 import com.example.sistemaweb.sistemaweb.Services.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.ui.Model;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+
 
 @Controller
 public class MateriaDefectoController {

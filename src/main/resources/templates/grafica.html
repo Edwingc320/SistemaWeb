@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gráficos Avanzados: D3.js vs Plotly.js vs ECharts</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 20px;
+    background: #f9f9f9;
+    color: #333;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .chart-container {
+    background: white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin: 0 auto 60px auto;
+    padding: 20px;
+    max-width: 700px;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #222;
+  }
+  #d3-chart svg {
+    width: 100%;
+    height: 400px;
+    overflow: visible;
+  }
+  #plotly-chart, #echarts-chart {
+    width: 100%;
+    height: 400px;
+  }
+  /* Tooltip para D3 */
+  .tooltip {
+    position: absolute;
+    background: rgba(50,50,50,0.85);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+<h1>Gráficos Avanzados: D3.js vs Plotly.js vs ECharts</h1>
+
+<div class="chart-container" id="d3-chart-container">
+  <h2>D3.js — Gráfico de barras con animación y tooltip</h2>
+  <div id="d3-chart"></div>
+</div>
+
+<div class="chart-container" id="plotly-chart-container">
+  <h2>Plotly.js — Gráfico de líneas con zoom, hover y leyenda</h2>
+  <div id="plotly-chart"></div>
+</div>
+
+<div class="chart-container" id="echarts-chart-container">
+  <h2>ECharts — Gráfico combinado (barras y línea) con tooltip avanzado</h2>
+  <div id="echarts-chart"></div>
+</div>
+
+<div class="tooltip" id="d3-tooltip"></div>
+
+<!-- Librerías -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+<script>
+  // Datos usados en los tres gráficos
+  const data = [
+    { name: "Ene", sales: 120, profit: 40 },
+    { name: "Feb", sales: 150, profit: 50 },
+    { name: "Mar", sales: 180, profit: 70 },
+    { name: "Abr", sales: 200, profit: 90 },
+    { name: "May", sales: 170, profit: 65 },
+    { name: "Jun", sales: 210, profit: 100 },
+    { name: "Jul", sales: 230, profit: 120 }
+  ];
+
+  // --- D3.js Gráfico avanzado ---
+  (function() {
+    const margin = {top: 40, right: 30, bottom: 50, left: 60};
+    const width = 700 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#d3-chart")
+      .append("svg")
+      .attr("viewBox", `0 0 ${700} ${400}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    const chart = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([0, width])
+      .padding(0.3);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.sales) * 1.1])
+      .range([height, 0]);
+
+    // Ejes
+    chart.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("font-size", "14px");
+
+    chart.append("g")
+      .call(d3.axisLeft(y))
+      .selectAll("text")
+      .style("font-size", "14px");
+
+    // Título eje Y
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height/2 - margin.top)
+      .attr("y", 15)
+      .attr("text-anchor", "middle")
+      .attr("font-weight", "600")
+      .text("Ventas");
+
+    // Tooltip
+    const tooltip = d3.select("#d3-tooltip");
+
+    // Barras con animación y tooltip
+    chart.selectAll("rect")
+      .data(data)
+      .join("rect")
+      .attr("x", d => x(d.name))
+      .attr("y", height)
+      .attr("width", x.bandwidth())
+      .attr("height", 0)
+      .attr("fill", "#1f77b4")
+      .on("mouseover", (event, d) => {
+        tooltip.style("opacity", 1)
+          .html(`<strong>${d.name}</strong><br>Ventas: ${d.sales}`)
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY - 30) + "px");
+        d3.select(event.currentTarget).attr("fill", "#ff7f0e");
+      })
+      .on("mouseout", (event, d) => {
+        tooltip.style("opacity", 0);
+        d3.select(event.currentTarget).attr("fill", "#1f77b4");
+      })
+      .transition()
+      .duration(900)
+      .attr("y", d => y(d.sales))
+      .attr("height", d => height - y(d.sales));
+  })();
+
+  // --- Plotly.js gráfico avanzado ---
+  (function() {
+    const traceSales = {
+      x: data.map(d => d.name),
+      y: data.map(d => d.sales),
+      mode: 'lines+markers',
+      name: 'Ventas',
+      line: {shape: 'spline', smoothing: 1.3, color: '#17BECF'},
+      marker: {size: 8}
+    };
+
+    const traceProfit = {
+      x: data.map(d => d.name),
+      y: data.map(d => d.profit),
+      mode: 'lines+markers',
+      name: 'Ganancia',
+      line: {shape: 'spline', smoothing: 1.3, color: '#7F7F7F'},
+      marker: {size: 8}
+    };
+
+    const layout = {
+      title: 'Ventas y Ganancia por Mes',
+      hovermode: 'x unified',
+      legend: {x: 0, y: 1.1, orientation: 'h'},
+      xaxis: {title: 'Mes'},
+      yaxis: {title: 'Cantidad'},
+      margin: {t: 50, b: 50, l: 60, r: 30}
+    };
+
+    Plotly.newPlot('plotly-chart', [traceSales, traceProfit], layout, {responsive: true});
+  })();
+
+  // --- ECharts gráfico avanzado ---
+  (function() {
+    const chart = echarts.init(document.getElementById('echarts-chart'));
+
+    const option = {
+      title: {
+        text: 'Ventas y Ganancia Mensual',
+        left: 'center',
+        textStyle: {fontWeight: 'bold', fontSize: 18}
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {type: 'shadow'}
+      },
+      legend: {
+        data: ['Ventas', 'Ganancia'],
+        top: 30,
+        left: 'center'
+      },
+      xAxis: [
+        {
+          type: 'category',
+          data: data.map(d => d.name),
+          axisTick: {alignWithLabel: true}
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Ventas',
+          position: 'left',
+          axisLine: {lineStyle: {color: '#5470C6'}}
+        },
+        {
+          type: 'value',
+          name: 'Ganancia',
+          position: 'right',
+          axisLine: {lineStyle: {color: '#91CC75'}}
+        }
+      ],
+      series: [
+        {
+          name: 'Ventas',
+          type: 'bar',
+          data: data.map(d => d.sales),
+          itemStyle: {color: '#5470C6'},
+          emphasis: {focus: 'series'},
+          yAxisIndex: 0
+        },
+        {
+          name: 'Ganancia',
+          type: 'line',
+          data: data.map(d => d.profit),
+          itemStyle: {color: '#91CC75'},
+          smooth: true,
+          yAxisIndex: 1
+        }
+      ]
+    };
+
+    chart.setOption(option);
+    window.addEventListener('resize', () => chart.resize());
+  })();
+
+</script>
+</body>
+</html>

@@ -1,10 +1,8 @@
 package com.example.sistemaweb.sistemaweb.Controller;
 
 import com.example.sistemaweb.sistemaweb.Entities.*;
-import com.example.sistemaweb.sistemaweb.Repositories.*;
 import com.example.sistemaweb.sistemaweb.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +12,7 @@ import java.util.List;
 @RequestMapping("/api/materias")
 public class MateriaController {
 
-    @Autowired
-    private asignarMateriasAGrupo asignarMateriasService;
+   
     /* 
     @PostMapping("/asignar")
     public String asignarMateriasAGrupo(@RequestParam int idGrupo, @RequestBody List<Long> idMaterias) {
@@ -53,8 +50,6 @@ public class MateriaController {
 
     
 
-    @Autowired
-    private ProfesorService profesorService;
 
     @GetMapping("/por-grupo/{idGrupo}")
     public ResponseEntity<List<Materia>> obtenerMateriasPorGrupo(@PathVariable Long idGrupo) {
