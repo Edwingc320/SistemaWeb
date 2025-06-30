@@ -112,30 +112,32 @@
 
    <build>
   <plugins>
+    <plugins>
     <!-- Configura el compilador para cross-compilation a Java 17 -->
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
       <version>3.10.1</version>
       <configuration>
-        <!-- Esto hace que se usen las APIs de Java 17 y se genere bytecode para la 17 -->
         <release>${java.version}</release>
+        <annotationProcessorPaths>
+          <path>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+          </path>
+        </annotationProcessorPaths>
       </configuration>
-      <annotationProcessorPaths>
-        <!-- Si usas Lombok, mantenlo aquí dentro -->
-        <path>
-          <groupId>org.projectlombok</groupId>
-          <artifactId>lombok</artifactId>
-          <version>1.18.24</version>
-        </path>
-      </annotationProcessorPaths>
     </plugin>
 
-    <!-- Spring Boot plugin (sin cambios) -->
+    <!-- Spring Boot plugin -->
     <plugin>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-maven-plugin</artifactId>
     </plugin>
+  </plugins>
+
+
   </plugins>
 </build>
     <repositories>
