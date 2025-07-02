@@ -68,7 +68,7 @@ public class AlumnoController {
             e.printStackTrace();
             model.addAttribute("error", "Hubo un error al cargar el archivo: " + e.getMessage());
         }
-        return "Proyecto/cargarCalificaciones"; // Regresa a la misma vista
+        return "/Proyecto/cargarCalificaciones"; // Regresa a la misma vista
     }
     
     

@@ -13,15 +13,16 @@ import lombok.Setter;
 public class Profesor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idProfesor;  // Cambiar a tipo int
+    @Column(name = "id_profesor")
+    private int idProfesor;
 
     @Column(name = "nombre", length = 100)
     private String nombre;
 
-    @Column(name = "apellidoMaterno", length = 100)
+    @Column(name = "apellido_materno", length = 100)
     private String apellidoMaterno;
 
-    @Column(name = "apellidoPaterno", length = 100)
+    @Column(name = "apellido_paterno", length = 100)
     private String apellidoPaterno;
 
     @Column(name = "clave", unique = true, nullable = false, length = 20)

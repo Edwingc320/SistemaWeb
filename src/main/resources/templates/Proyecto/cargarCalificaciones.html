@@ -211,7 +211,7 @@
             try {
                 const response = await fetch(this.action, {
                     method: this.method,
-                    body: formData
+                    body: formData,
                 });
     
                 if (!response.ok) {
@@ -219,7 +219,8 @@
                 }
     
                 // Redirigir a la URL después de procesar correctamente
-                window.location.href = "http://localhost:8081/calificacionesGrupo";
+                window.location.href = "/calificacionesGrupo";
+
             } catch (error) {
                 alert(error.message);
                 submitButton.textContent = "Subir";
