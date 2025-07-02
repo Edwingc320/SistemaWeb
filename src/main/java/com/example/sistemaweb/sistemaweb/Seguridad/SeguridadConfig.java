@@ -90,6 +90,7 @@ public class SeguridadConfig {
                 "/error",            // página de error
                 "/css/**",           // recursos estáticos
                 "/js/**",
+                "/alumno_grupo",
                 "/img/**"         // si usas carpeta de imágenes
             ).permitAll()
             // TODO: si hay más carpetas de recursos, añádelas aquí
