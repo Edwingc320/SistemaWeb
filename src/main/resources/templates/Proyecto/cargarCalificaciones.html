@@ -8,14 +8,13 @@
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
 
-    <!-- Favicon 
-    <link href="img/favicon.ico" rel="icon">
-    -->
     <link rel="icon" href="data:,">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@300;500;700&display=swap" rel="stylesheet"> 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@300;500;700&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -25,37 +24,26 @@
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 
-
-
-    
     <script>
-
-        
         async function cargarGruposPorSemestre() {
             const idSemestre = document.getElementById('idSemestre').value;
-
+            const grupoSelect = document.getElementById('idGrupo');
             if (!idSemestre) {
-                document.getElementById('idGrupo').innerHTML = '<option value="">Selecciona un grupo</option>';
+                grupoSelect.innerHTML = '<option value="">Selecciona un grupo</option>';
                 return;
             }
-
             try {
                 const response = await fetch(`/api/gruposPorSemestre?idSemestre=${idSemestre}`);
-                if (!response.ok) {
-                    throw new Error(`Error en la respuesta: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(response.statusText);
                 const grupos = await response.json();
-
-                const grupoSelect = document.getElementById('idGrupo');
                 grupoSelect.innerHTML = '<option value="">Selecciona un grupo</option>';
-                grupos.forEach(grupo => {
-                    const option = document.createElement('option');
-                    option.value = grupo.idGrupo;
-                    option.textContent = grupo.nombre;
-                    grupoSelect.appendChild(option);
+                grupos.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g.idGrupo;
+                    opt.textContent = g.nombre;
+                    grupoSelect.appendChild(opt);
                 });
             } catch (error) {
                 console.error('Error al cargar los grupos:', error);
@@ -64,51 +52,31 @@
 
         async function cargarMateriasPorGrupo() {
             const idGrupo = document.getElementById('idGrupo').value;
-
+            const materiasSelect = document.getElementById('idMaterias');
             if (!idGrupo) {
-                document.getElementById('materiasContainer').innerHTML = 'Selecciona un grupo para ver sus materias.';
+                materiasSelect.innerHTML = '<option value="">Selecciona un grupo para ver sus materias.</option>';
                 return;
             }
-
             try {
                 const response = await fetch(`/api/materias/por-grupo/${idGrupo}`);
-                if (!response.ok) {
-                    throw new Error(`Error en la respuesta: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(response.statusText);
                 const materias = await response.json();
-
-                const materiasSelect = document.getElementById('idMaterias');
                 materiasSelect.innerHTML = '<option value="">Selecciona una materia</option>';
-                
-                if (materias.length > 0) {
-                    materias.forEach(materia => {
-                        const option = document.createElement('option');
-                        option.value = materia.idMateria;
-                        option.textContent = `${materia.materiaDefecto.nombre} (${materia.materiaDefecto.clave})`;
-                        materiasSelect.appendChild(option);
-                    });
-                } else {
-                    document.getElementById('materiasContainer').innerHTML = 'No hay materias asociadas a este grupo.';
-                }
+                materias.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.idMateria;
+                    opt.textContent = `${m.materiaDefecto.nombre} (${m.materiaDefecto.clave})`;
+                    materiasSelect.appendChild(opt);
+                });
             } catch (error) {
                 console.error('Error al cargar las materias:', error);
-                document.getElementById('materiasContainer').innerHTML = 'Error al cargar las materias.';
             }
         }
-
-
-
     </script>
-
 </head>
 
 <body>
 
-
-
-   
-
- 
     <!-- Components Header Start -->
     <div th:replace="components/header :: header"></div>
     <!-- Header End -->
@@ -118,128 +86,71 @@
         '', 
         'AÑADIR CALIFICACIONES', 
         'Agregar', 
-        '#semestreForm')}">
-    </div>
+        '#semestreForm')}"></div>
     <!-- Components Page Header End -->
 
-    
-    <!-- Components Page Header End -->
-
-
-    <!--CONTENIDO de la Pagina-->
+    <!-- CONTENIDO de la Página -->
     <div class="container d-flex justify-content-center mt-5">
-        <div class="form-container w-100" style="max-width: 93%; background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <div class="form-container w-100"
+            style="max-width: 93%; background-color: white; padding: 2rem; border-radius: 10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
 
-        <h1 class="text-center mb-4">Cargar Calificaciones</h1>
-        
-        <form id="semestreForm" class="text-center mx-auto" style="max-width: 500px;">
+            <h1 class="text-center mb-4">Cargar Calificaciones</h1>
 
-            <label for="idSemestre">Selecciona un semestre: </label>
-            <select name="idSemestre" id="idSemestre" onchange="cargarGruposPorSemestre()">
-                <option value="">Selecciona un semestre</option>
-                <th:block th:each="semestre : ${semestres}">
-                    <option th:value="${semestre.idSemestre}" th:text="${semestre.nombre}"></option>
-                </th:block>
-            </select>
+            <!-- Selección de Semestre/Grupo/Materia -->
+            <form id="semestreForm" class="text-center mx-auto" style="max-width: 500px;">
+                <label for="idSemestre">Selecciona un semestre:</label>
+                <select name="idSemestre" id="idSemestre" onchange="cargarGruposPorSemestre()">
+                    <option value="">Selecciona un semestre</option>
+                    <th:block th:each="semestre : ${semestres}">
+                        <option th:value="${semestre.idSemestre}" th:text="${semestre.nombre}"></option>
+                    </th:block>
+                </select>
+
+                <br><br>
+
+                <label for="idGrupo">Selecciona un grupo:</label>
+                <select name="idGrupo" id="idGrupo" onchange="cargarMateriasPorGrupo()">
+                    <option value="">Selecciona un grupo</option>
+                </select>
+
+                <br><br>
+
+                <label for="idMaterias">Selecciona una materia:</label>
+                <select name="idMaterias" id="idMaterias">
+                    <option value="">Selecciona una materia</option>
+                </select>
+            </form>
 
             <br><br>
 
-            <label for="idGrupo">Selecciona un grupo: </label>
-            <select name="idGrupo" id="idGrupo" onchange="cargarMateriasPorGrupo()">
-                <option value="">Selecciona un grupo</option>
-            </select>
+            <!-- Formulario de Subida -->
+            <form id="uploadForm" action="/alumno_grupo" method="post" enctype="multipart/form-data"
+                class="text-center mx-auto" style="max-width: 500px;">
+                <input type="hidden" name="idGrupo" id="idGrupoHidden">
+                <input type="hidden" name="idMateria" id="idMateriaHidden">
 
-            <br><br>
+                <label for="file">Selecciona el archivo Excel:</label>
+                <input type="file" id="file" name="file" accept=".xlsx, .xls" required class="form-control">
 
-            <label for="idMaterias">Selecciona una materia: </label>
-            <select name="idMaterias" id="idMaterias">
-                <option value="">Selecciona una materia</option>
-            </select>
-        </form>
+                <br>
 
-        <!-- Mensaje de éxito o error -->
-        <div th:if="${success}" style="color: green;">
-            <p th:text="${success}"></p>
-        </div>
-        <div th:if="${error}" style="color: red;">
-            <p th:text="${error}"></p>
-        </div>
+                <label for="sheetNameSelect">Selecciona una hoja:</label>
+                <select id="sheetNameSelect" name="sheetName" required class="form-control">
+                    <option value="">Selecciona un archivo primero</option>
+                </select>
 
-        <br><br>
-        <form id="uploadForm" action="/alumno_grupo" method="post" enctype="multipart/form-data" class="text-center mx-auto" style="max-width: 500px;">
-            <!-- Campo oculto para enviar el id del grupo seleccionado -->
-            <input type="hidden" name="idGrupo" id="idGrupoHidden">
-            <input type="hidden" name="idMateria" id="idMateriaHidden">
-            
-            <!-- Campo para seleccionar el archivo Excel -->
-            <label for="file">Selecciona el archivo Excel:</label>
-            <input type="file" id="file" name="file" accept=".xlsx, .xls" required>
-            
-            <!-- Botón para enviar el formulario -->
-            <button id="submitButton" type="submit" class="btn btn-secondary w-100 mt-3">SUBIR</button>
-        </form>
-        
+                <button id="submitButton" type="submit" class="btn btn-secondary w-100 mt-3">SUBIR</button>
+            </form>
+
         </div>
     </div>
-
-
-    
-
-    <!--Script del formulario /Carga Calificaciones-->
-    <script>
-        document.getElementById('idGrupo').addEventListener('change', function() {
-            document.getElementById('idGrupoHidden').value = this.value;
-        });
-    
-        document.getElementById('idMaterias').addEventListener('change', function() {
-            document.getElementById('idMateriaHidden').value = this.value;
-        });
-    
-        document.getElementById("uploadForm").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Evita el envío automático del formulario
-    
-            const submitButton = document.getElementById("submitButton");
-    
-            // Evitar múltiples clics
-            if (submitButton.disabled) return;
-    
-            submitButton.disabled = true;
-            submitButton.textContent = "Procesando...";
-    
-            const formData = new FormData(this);
-    
-            try {
-                const response = await fetch(this.action, {
-                    method: this.method,
-                    body: formData,
-                });
-    
-                const responseText = await response.text();
-                if (response.ok && responseText === "OK") {
-                    window.location.href = "/calificacionesGrupo";
-                } else {
-                    throw new Error(responseText);
-                }
-
-
-            } catch (error) {
-                alert(error.message);
-                submitButton.textContent = "Subir";
-                submitButton.disabled = false; // Reactivar el botón si hay error
-            }
-        });
-    </script>
-    <!-- Script End -->
-
 
     <!-- Components Footer Start -->
     <div th:replace="components/footer :: footer"></div>
     <!-- Footer End -->
 
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary px-3 back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -250,18 +161,77 @@
     <script src="lib/tempusdominus/js/moment.min.js"></script>
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Contact Javascript File -->
     <script src="mail/jqBootstrapValidation.min.js"></script>
     <script src="mail/contact.js"></script>
-
-    <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <!-- Incluir Bootstrap Bundle con Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-   
+    <!-- SheetJS para leer Excel en cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+    <script>
+        // Sincronizar IDs ocultos
+        document.getElementById('idGrupo').addEventListener('change', e => {
+            document.getElementById('idGrupoHidden').value = e.target.value;
+        });
+        document.getElementById('idMaterias').addEventListener('change', e => {
+            document.getElementById('idMateriaHidden').value = e.target.value;
+        });
+
+        // Al cambiar archivo, leer hojas
+        document.getElementById('file').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const sheetSelect = document.getElementById('sheetNameSelect');
+            sheetSelect.innerHTML = '<option value="">Cargando hojas...</option>';
+
+            if (!file) {
+                sheetSelect.innerHTML = '<option value="">Selecciona un archivo primero</option>';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                const data = new Uint8Array(ev.target.result);
+                const wb = XLSX.read(data, { type: 'array' });
+
+                sheetSelect.innerHTML = '<option value="">Selecciona una hoja</option>';
+                wb.SheetNames.forEach(name => {
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = name;
+                    sheetSelect.appendChild(opt);
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        // Envío de formulario
+        document.getElementById('uploadForm').addEventListener('submit', async function (ev) {
+            ev.preventDefault();
+            const btn = document.getElementById('submitButton');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+
+            const fd = new FormData(this);
+            try {
+                const resp = await fetch(this.action, {
+                    method: this.method,
+                    body: fd
+                });
+                const text = await resp.text();
+                if (resp.ok && text === 'OK') {
+                    window.location.href = '/calificacionesGrupo';
+                } else {
+                    throw new Error(text);
+                }
+            } catch (err) {
+                alert(err.message);
+                btn.disabled = false;
+                btn.textContent = 'SUBIR';
+            }
+        });
+    </script>
 
 </body>
 

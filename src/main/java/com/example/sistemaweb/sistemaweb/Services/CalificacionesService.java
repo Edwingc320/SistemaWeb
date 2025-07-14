@@ -414,177 +414,187 @@ public class CalificacionesService {
             "JUAN", "CARLOS", "MIGUEL", "LUIS", "JOSÉ", "MARÍA", "ANA", "JONATHAN", "ANGEL", "PEDRO"
     );
 
-    public void cargarAlumnosDesdeExcelCompletoREs(MultipartFile file, Grupo grupo, Materia materia) {
+    public void cargarAlumnosDesdeExcelCompletoREs(MultipartFile file, 
+                                              Grupo grupo, 
+                                              Materia materia,
+                                              String sheetName) {
     try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
-        Sheet sheet = workbook.getSheetAt(0);
-
-        // Predicate para detectar celdas vacías o nulas
-        Predicate<Cell> isEmpty = cell ->
-            cell == null ||
-            cell.getCellType() == CellType.BLANK ||
-            getCellValueAsString(cell).trim().isEmpty();
-
-        int lastRow = sheet.getLastRowNum();
-        // Iterar desde la fila 2 (suponiendo que las dos primeras filas son encabezados)
-        for (int i = 2; i <= lastRow; i++) {
-            Row row = sheet.getRow(i);
-            if (row == null) {
-                // Si la fila no existe, asumimos fin de los datos
-                break;
-            }
-
-            // Celdas clave: columna 1 = matrícula, columna 2 = estudiante
-            Cell celMatricula = row.getCell(1);
-            Cell celEstudiante = row.getCell(2);
-
-            // Si faltan matrícula o nombre, salta o detén el bucle
-            if (isEmpty.test(celMatricula) || isEmpty.test(celEstudiante)) {
-                break;  // o usa 'continue;' para ignorar solo esta fila y seguir
-            }
-
-            // Obtener valores
-            String no          = getCellValueAsString(row.getCell(0));
-            String matricula   = getCellValueAsString(celMatricula).trim();
-            String estudiante  = getCellValueAsString(celEstudiante).trim();
-
-            // ----------------------------------------------------------------
-            // Lógica de separación de nombre y apellidos (igual que antes)
-            String apePatFinal = "";
-            String apeMatFinal = "";
-            String nombreFinal = "";
-            String[] tokens    = estudiante.split("\\s+");
-
-            if (tokens.length == 4) {
-                if (tokens[1].equalsIgnoreCase("DE")) {
-                    apePatFinal  = tokens[0];
-                    apeMatFinal  = tokens[1] + " " + tokens[2];
-                    nombreFinal  = tokens[3];
-                } else if (tokens[2].equalsIgnoreCase("DE")) {
-                    nombreFinal  = tokens[0];
-                    apePatFinal  = tokens[1];
-                    apeMatFinal  = tokens[2] + " " + tokens[3];
-                } else {
-                    if (commonNames.contains(tokens[0].toUpperCase())) {
-                        nombreFinal = tokens[0];
-                        apePatFinal = tokens[1];
-                        apeMatFinal = tokens[2] + " " + tokens[3];
-                    } else {
-                        apePatFinal = tokens[0];
-                        apeMatFinal = tokens[1];
-                        nombreFinal = tokens[2] + " " + tokens[3];
-                    }
-                }
-            } else {
-                int index = 0;
-                StringBuilder apellidoPaterno = new StringBuilder();
-                StringBuilder apellidoMaterno = new StringBuilder();
-                StringBuilder nombres         = new StringBuilder();
-                // Primer apellido
-                if (tokens.length > 0) {
-                    apellidoPaterno.append(tokens[index++]);
-                    while (index < tokens.length - 1 && particles.contains(tokens[index].toUpperCase())) {
-                        apellidoPaterno.append(" ").append(tokens[index++]);
-                        if (index < tokens.length - 1) {
-                            apellidoPaterno.append(" ").append(tokens[index++]);
-                        }
-                    }
-                }
-                // Segundo apellido
-                if (index < tokens.length - 1) {
-                    apellidoMaterno.append(tokens[index++]);
-                    while (index < tokens.length - 1 && particles.contains(tokens[index].toUpperCase())) {
-                        apellidoMaterno.append(" ").append(tokens[index++]);
-                        if (index < tokens.length - 1) {
-                            apellidoMaterno.append(" ").append(tokens[index++]);
-                        }
-                    }
-                }
-                // Nombres restantes
-                while (index < tokens.length) {
-                    nombres.append(tokens[index++]).append(" ");
-                }
-                apePatFinal = apellidoPaterno.toString().trim();
-                apeMatFinal = apellidoMaterno.toString().trim();
-                nombreFinal = nombres.toString().trim();
-            }
-            // ----------------------------------------------------------------
-
-            // Crear o actualizar Alumno
-            Alumno alumno;
-            if (!alumnoRepository.existsByMatricula(matricula)) {
-                alumno = new Alumno();
-                alumno.setMatricula(matricula);
-                alumno.setNombre(nombreFinal);
-                alumno.setApellidoPaterno(apePatFinal);
-                alumno.setApellidoMaterno(apeMatFinal);
-                alumno = alumnoRepository.save(alumno);
-                System.out.println("Alumno agregado: " + matricula);
-            } else {
-                alumno = alumnoRepository.findByMatricula(matricula).orElse(null);
-                System.out.println("Ya registrado: " + matricula);
-            }
-
-            // Asignar al grupo si no existe la relación
-            if (!alumnoGrupoRepository
-                    .existsByAlumno_IdAlumnoAndGrupo_IdGrupo(alumno.getIdAlumno(), grupo.getIdGrupo())) {
-                grupoService.asignarGrupoAAlumno(alumno.getIdAlumno(), grupo.getIdGrupo());
-                System.out.println("Asignado al grupo: " + grupo.getIdGrupo());
-            }
-
-            // Leer y parsear calificaciones
-            BigDecimal corteI      = parseBigDecimal(getCellValueAsString(row.getCell(3)));
-            BigDecimal corteII     = parseBigDecimal(getCellValueAsString(row.getCell(4)));
-            BigDecimal corteIII    = parseBigDecimal(getCellValueAsString(row.getCell(5)));
-            BigDecimal calFinal    = parseBigDecimal(getCellValueAsString(row.getCell(6)));
-            String letraFinal      = getCellValueAsString(row.getCell(7));
-            BigDecimal recI        = parseBigDecimal(getCellValueAsString(row.getCell(8)));
-            BigDecimal recII       = parseBigDecimal(getCellValueAsString(row.getCell(9)));
-            BigDecimal recIII      = parseBigDecimal(getCellValueAsString(row.getCell(10)));
-            BigDecimal calRecup    = parseBigDecimal(getCellValueAsString(row.getCell(11)));
-            String letraRecup      = getCellValueAsString(row.getCell(12));
-
-            // Guardar o actualizar Calificaciones
-            Optional<Calificaciones> optCal = calificacionesRepository
-                    .findByAlumno_IdAlumnoAndMateria_IdMateria(alumno.getIdAlumno(), materia.getIdMateria());
-
-            if (optCal.isPresent()) {
-                Calificaciones cal = optCal.get();
-                if (cal.getCorte1() == null)          cal.setCorte1(corteI);
-                if (cal.getCorte2() == null)          cal.setCorte2(corteII);
-                if (cal.getCorte3() == null)          cal.setCorte3(corteIII);
-                cal.setCalificacionOrdinaria(calFinal);
-                if (cal.getDesempeno() == null)       cal.setDesempeno(letraFinal);
-                if (cal.getRecuperacion1() == null)   cal.setRecuperacion1(recI);
-                if (cal.getRecuperacion2() == null)   cal.setRecuperacion2(recII);
-                if (cal.getRecuperacion3() == null)   cal.setRecuperacion3(recIII);
-                if (cal.getCalificacionOrdinariaR() == null) cal.setCalificacionOrdinariaR(calRecup);
-                if (cal.getDesempeno1() == null)      cal.setDesempeno1(letraRecup);
-                calificacionesRepository.save(cal);
-                System.out.println("Calificaciones actualizadas: " + matricula);
-            } else {
-                Calificaciones nuevo = new Calificaciones();
-                nuevo.setAlumno(alumno);
-                nuevo.setMateria(materia);
-                nuevo.setCorte1(corteI);
-                nuevo.setCorte2(corteII);
-                nuevo.setCorte3(corteIII);
-                nuevo.setCalificacionOrdinaria(calFinal);
-                nuevo.setDesempeno(letraFinal);
-                nuevo.setRecuperacion1(recI);
-                nuevo.setRecuperacion2(recII);
-                nuevo.setRecuperacion3(recIII);
-                nuevo.setCalificacionOrdinariaR(calRecup);
-                nuevo.setDesempeno1(letraRecup);
-                calificacionesRepository.save(nuevo);
-                System.out.println("Nueva calificación registrada: " + matricula);
-            }
+        // Obtiene la hoja por nombre en lugar de la primera
+        Sheet sheet = workbook.getSheet(sheetName);
+        if (sheet == null) {
+            throw new IllegalArgumentException("La hoja '" + sheetName + "' no existe en el archivo.");
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
+            // Predicate para detectar celdas vacías o nulas
+            Predicate<Cell> isEmpty = cell ->
+                cell == null ||
+                cell.getCellType() == CellType.BLANK ||
+                getCellValueAsString(cell).trim().isEmpty();
 
-    private BigDecimal parseBigDecimal(String value) {
+            int lastRow = sheet.getLastRowNum();
+            // Iterar desde la fila 2 (suponiendo que las dos primeras filas son encabezados)
+            for (int i = 2; i <= lastRow; i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    // Si la fila no existe, asumimos fin de los datos
+                    break;
+                }
+
+                // Celdas clave: columna 1 = matrícula, columna 2 = estudiante
+                Cell celMatricula = row.getCell(1);
+                Cell celEstudiante = row.getCell(2);
+
+                // Si faltan matrícula o nombre, salta o detén el bucle
+                if (isEmpty.test(celMatricula) || isEmpty.test(celEstudiante)) {
+                    break;  // o usa 'continue;' para ignorar solo esta fila y seguir
+                }
+
+                // Obtener valores
+                String no          = getCellValueAsString(row.getCell(0));
+                String matricula   = getCellValueAsString(celMatricula).trim();
+                String estudiante  = getCellValueAsString(celEstudiante).trim();
+
+                // ----------------------------------------------------------------
+                // Lógica de separación de nombre y apellidos (igual que antes)
+                String apePatFinal = "";
+                String apeMatFinal = "";
+                String nombreFinal = "";
+                String[] tokens    = estudiante.split("\\s+");
+
+                if (tokens.length == 4) {
+                    if (tokens[1].equalsIgnoreCase("DE")) {
+                        apePatFinal  = tokens[0];
+                        apeMatFinal  = tokens[1] + " " + tokens[2];
+                        nombreFinal  = tokens[3];
+                    } else if (tokens[2].equalsIgnoreCase("DE")) {
+                        nombreFinal  = tokens[0];
+                        apePatFinal  = tokens[1];
+                        apeMatFinal  = tokens[2] + " " + tokens[3];
+                    } else {
+                        if (commonNames.contains(tokens[0].toUpperCase())) {
+                            nombreFinal = tokens[0];
+                            apePatFinal = tokens[1];
+                            apeMatFinal = tokens[2] + " " + tokens[3];
+                        } else {
+                            apePatFinal = tokens[0];
+                            apeMatFinal = tokens[1];
+                            nombreFinal = tokens[2] + " " + tokens[3];
+                        }
+                    }
+                } else {
+                    int index = 0;
+                    StringBuilder apellidoPaterno = new StringBuilder();
+                    StringBuilder apellidoMaterno = new StringBuilder();
+                    StringBuilder nombres         = new StringBuilder();
+                    // Primer apellido
+                    if (tokens.length > 0) {
+                        apellidoPaterno.append(tokens[index++]);
+                        while (index < tokens.length - 1 && particles.contains(tokens[index].toUpperCase())) {
+                            apellidoPaterno.append(" ").append(tokens[index++]);
+                            if (index < tokens.length - 1) {
+                                apellidoPaterno.append(" ").append(tokens[index++]);
+                            }
+                        }
+                    }
+                    // Segundo apellido
+                    if (index < tokens.length - 1) {
+                        apellidoMaterno.append(tokens[index++]);
+                        while (index < tokens.length - 1 && particles.contains(tokens[index].toUpperCase())) {
+                            apellidoMaterno.append(" ").append(tokens[index++]);
+                            if (index < tokens.length - 1) {
+                                apellidoMaterno.append(" ").append(tokens[index++]);
+                            }
+                        }
+                    }
+                    // Nombres restantes
+                    while (index < tokens.length) {
+                        nombres.append(tokens[index++]).append(" ");
+                    }
+                    apePatFinal = apellidoPaterno.toString().trim();
+                    apeMatFinal = apellidoMaterno.toString().trim();
+                    nombreFinal = nombres.toString().trim();
+                }
+                // ----------------------------------------------------------------
+
+                // Crear o actualizar Alumno
+                Alumno alumno;
+                if (!alumnoRepository.existsByMatricula(matricula)) {
+                    alumno = new Alumno();
+                    alumno.setMatricula(matricula);
+                    alumno.setNombre(nombreFinal);
+                    alumno.setApellidoPaterno(apePatFinal);
+                    alumno.setApellidoMaterno(apeMatFinal);
+                    alumno = alumnoRepository.save(alumno);
+                    System.out.println("Alumno agregado: " + matricula);
+                } else {
+                    alumno = alumnoRepository.findByMatricula(matricula).orElse(null);
+                    System.out.println("Ya registrado: " + matricula);
+                }
+
+                // Asignar al grupo si no existe la relación
+                if (!alumnoGrupoRepository
+                        .existsByAlumno_IdAlumnoAndGrupo_IdGrupo(alumno.getIdAlumno(), grupo.getIdGrupo())) {
+                    grupoService.asignarGrupoAAlumno(alumno.getIdAlumno(), grupo.getIdGrupo());
+                    System.out.println("Asignado al grupo: " + grupo.getIdGrupo());
+                }
+
+                // Leer y parsear calificaciones
+                BigDecimal corteI      = parseBigDecimal(getCellValueAsString(row.getCell(3)));
+                BigDecimal corteII     = parseBigDecimal(getCellValueAsString(row.getCell(4)));
+                BigDecimal corteIII    = parseBigDecimal(getCellValueAsString(row.getCell(5)));
+                BigDecimal calFinal    = parseBigDecimal(getCellValueAsString(row.getCell(6)));
+                String letraFinal      = getCellValueAsString(row.getCell(7));
+                BigDecimal recI        = parseBigDecimal(getCellValueAsString(row.getCell(8)));
+                BigDecimal recII       = parseBigDecimal(getCellValueAsString(row.getCell(9)));
+                BigDecimal recIII      = parseBigDecimal(getCellValueAsString(row.getCell(10)));
+                BigDecimal calRecup    = parseBigDecimal(getCellValueAsString(row.getCell(11)));
+                String letraRecup      = getCellValueAsString(row.getCell(12));
+
+                // Guardar o actualizar Calificaciones
+                Optional<Calificaciones> optCal = calificacionesRepository
+                        .findByAlumno_IdAlumnoAndMateria_IdMateria(alumno.getIdAlumno(), materia.getIdMateria());
+
+                if (optCal.isPresent()) {
+                    Calificaciones cal = optCal.get();
+                    if (cal.getCorte1() == null)          cal.setCorte1(corteI);
+                    if (cal.getCorte2() == null)          cal.setCorte2(corteII);
+                    if (cal.getCorte3() == null)          cal.setCorte3(corteIII);
+                    cal.setCalificacionOrdinaria(calFinal);
+                    if (cal.getDesempeno() == null)       cal.setDesempeno(letraFinal);
+                    if (cal.getRecuperacion1() == null)   cal.setRecuperacion1(recI);
+                    if (cal.getRecuperacion2() == null)   cal.setRecuperacion2(recII);
+                    if (cal.getRecuperacion3() == null)   cal.setRecuperacion3(recIII);
+                    if (cal.getCalificacionOrdinariaR() == null) cal.setCalificacionOrdinariaR(calRecup);
+                    if (cal.getDesempeno1() == null)      cal.setDesempeno1(letraRecup);
+                    calificacionesRepository.save(cal);
+                    System.out.println("Calificaciones actualizadas: " + matricula);
+                } else {
+                    Calificaciones nuevo = new Calificaciones();
+                    nuevo.setAlumno(alumno);
+                    nuevo.setMateria(materia);
+                    nuevo.setCorte1(corteI);
+                    nuevo.setCorte2(corteII);
+                    nuevo.setCorte3(corteIII);
+                    nuevo.setCalificacionOrdinaria(calFinal);
+                    nuevo.setDesempeno(letraFinal);
+                    nuevo.setRecuperacion1(recI);
+                    nuevo.setRecuperacion2(recII);
+                    nuevo.setRecuperacion3(recIII);
+                    nuevo.setCalificacionOrdinariaR(calRecup);
+                    nuevo.setDesempeno1(letraRecup);
+                    calificacionesRepository.save(nuevo);
+                    System.out.println("Nueva calificación registrada: " + matricula);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+
+
+
+private BigDecimal parseBigDecimal(String value) {
         try {
             return new BigDecimal(value.trim());
         } catch (NumberFormatException e) {
