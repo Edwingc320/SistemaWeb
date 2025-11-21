@@ -36,31 +36,31 @@ public class Calificaciones {
     private Materia materia;
 
     @Column(name = "corte1")
-    private BigDecimal corte1 = null;
+    private BigDecimal corte1;
 
     @Column(name = "corte2")
-    private BigDecimal corte2 = null;
+    private BigDecimal corte2;
 
     @Column(name = "corte3")
-    private BigDecimal corte3 = null;
+    private BigDecimal corte3;
 
     @Column(name = "calificacion_ordinaria")
-    private BigDecimal calificacionOrdinaria = null;
+    private BigDecimal calificacionOrdinaria;
 
     @Column(name = "desempeño", length = 255)
     private String desempeno;
 
     @Column(name = "recuperacion1")
-    private BigDecimal recuperacion1 = null;
+    private BigDecimal recuperacion1;
 
     @Column(name = "recuperacion2")
-    private BigDecimal recuperacion2 = null;
+    private BigDecimal recuperacion2;
 
     @Column(name = "recuperacion3")
-    private BigDecimal recuperacion3 = null;
+    private BigDecimal recuperacion3;
 
     @Column(name = "calificacion_ordinariar")
-    private BigDecimal calificacionOrdinariaR = null;
+    private BigDecimal calificacionOrdinariaR;
 
     @Column(name = "desempeño1", length = 255)
     private String desempeno1;
@@ -69,7 +69,7 @@ public class Calificaciones {
     @Column(name = "acreditado")
     private boolean acreditado = false;
 
-    @Column(name = "comentario ", length = 255)
+    @Column(name = "comentario", length = 255)
     private String comentario = null;
 
 
