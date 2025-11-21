@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 //@Table(name = "Calificaciones")
 
-@Table(name = "Calificaciones", uniqueConstraints = {
+@Table(name = "Calificaciones2", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"id_alumno", "id_materia"})
 })
 public class Calificaciones {
