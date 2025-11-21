@@ -36,6 +36,7 @@ public class SistemawebApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        /*
         String username = "master";
         // Solo crea el usuario si no existe
         if (usuarioRepo.findByUsername(username).isEmpty()) {
@@ -50,5 +51,6 @@ public class SistemawebApplication implements CommandLineRunner {
             usuarioRepo.save(usuario);
             System.out.println("Usuario '" + username + "' creado exitosamente.");
         }
+        */
     }
 }
