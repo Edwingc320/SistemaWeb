@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <title>Modificar o Eliminar Alumno</title>
@@ -29,7 +30,8 @@
 </head>
 <body>
 
-<div th:replace="components/header :: header"></div>
+<div th:replace="~{components/header :: header}"></div>
+
 
 <div th:replace="~{components/pageHeader :: pageHeader(
         '', 'MODIFICAR O ELIMINAR ALUMNO', 'Buscar', '#buscarForm')}"></div>

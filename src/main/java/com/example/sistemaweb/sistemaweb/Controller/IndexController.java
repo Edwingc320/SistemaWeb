@@ -35,8 +35,7 @@ public class IndexController {
         return "go";
     }
 
-
-    @GetMapping("/login")
+       @GetMapping("/login")
     public String login() {
         return "login"; // busca templates/Proyecto/login.html
     }
@@ -50,7 +49,7 @@ public class IndexController {
         return "Proyecto/añadirGrupos";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
     }
 
-    @GetMapping("/añadirPeriodo")
+    @GetMapping("/anadirPeriodo")
     public String añadirPeriodo() {
         return "Proyecto/añadirPeriodo";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
     }
@@ -71,7 +70,7 @@ public class IndexController {
     }
     @GetMapping("/")
     public String index() {
-        return "Proyecto/index";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
+        return "login";  // Esto le dice a Spring Boot que debe usar añadirGrupos.html desde templates
     }
     /* 
 

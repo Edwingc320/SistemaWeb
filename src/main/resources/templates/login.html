@@ -1,42 +1,89 @@
 <!DOCTYPE html>
-<!-- Coding By CodingNepal - www.codingnepalweb.com -->
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glassmorphism Login Form | CodingNepal</title>
-  <link rel="stylesheet" th:href="@{/css/styleLogin.css}">
-  <link rel="icon" href="data:,">
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Login</title>
+    <link rel="stylesheet" th:href="@{/css/styleLogin.css}">
+    <link rel="icon" href="data:,">
 </head>
 <body>
-  <div class="wrapper">
-    <form action="/login" method="post">>
-      <h2>Login</h2>
-        <div class="input-field">
-        <input type="text" name="username" required>
-        <label>Usuario:</label>
-      </div>
-      <div class="input-field">
-        <input type="password" name="password" required>
-        <label>Contraseña</label>
-      </div>
-      <div class="forget">
-        <label for="remember">
-          <input type="checkbox" id="remember">
-          <p>Remember me</p>
-        </label>
-        <a href="#">Forgot password?</a>
-      </div>
-      <button type="submit">Ingresar</button>
-      <div class="register">
-        <p>Don't have an account? <a href="#">Register</a></p>
-      </div>
-    </form>
-    <div style="color:red;">
-    <p th:if="${param.error}">Usuario o contraseña incorrectos</p>
-  </div>
-  </div>
+    <div class="wrapper">
+
+        <!-- FORMULARIO LOGIN -->
+        <form id="loginForm">
+            <h2>Login</h2>
+
+            <div class="input-field">
+                <input type="text" name="username" id="username" required>
+                <label>Usuario:</label>
+            </div>
+
+            <div class="input-field">
+                <input type="password" name="password" id="password" required>
+                <label>Contraseña</label>
+            </div>
+
+            <div class="forget">
+                <label>
+                    <input type="checkbox">
+                    <p>Remember me</p>
+                </label>
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit">Ingresar</button>
+
+            <div class="register">
+                <p>Don't have an account? <a href="#">Register</a></p>
+            </div>
+        </form>
+
+        <!-- MENSAJE DE ERROR -->
+        <div style="color:red;">
+            <p id="errorMessage"></p>
+        </div>
+
+    </div>
+
+    <!-- JS INTEGRADO -->
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const errorMessage = document.getElementById("errorMessage");
+
+            errorMessage.textContent = ""; // limpia error anterior
+
+            try {
+                const resp = await fetch('/auth/loginApi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    throw new Error(data.error || "Usuario o contraseña incorrectos");
+                }
+
+                // GUARDA TOKEN JWT
+                localStorage.setItem("token", data.token);
+
+                // REDIRECCIÓN
+                window.location.href = "/indexF";
+
+            } catch (err) {
+                errorMessage.textContent = err.message;
+            }
+        });
+    </script>
+
+    <script src="/js/main.js"></script>
+
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8" />
   <title>Gestión de Grupos</title>
@@ -29,6 +29,8 @@
   <!-- html2pdf y Chart.js (scripts que necesitábamos en <head> para que estén disponibles) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/main.js"></script>
+
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
       /* Estilos personalizados para las pestañas */
@@ -143,7 +145,8 @@
 </head>
 <body>
   <!-- Fragmento Header -->
-  <div th:replace="components/header :: header"></div>
+  <div th:replace="~{components/header :: header}"></div>
+
 
   <!-- Fragmento Page Header -->
   <div th:replace="~{components/pageHeader :: pageHeader(

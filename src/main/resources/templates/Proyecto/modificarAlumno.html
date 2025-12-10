@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+
 <head>
     <meta charset="UTF-8">
     <title>Modificar Alumno</title>
@@ -30,7 +34,8 @@
 <body>
 
 <!-- Header común -->
-<div th:replace="components/header :: header"></div>
+<div th:replace="~{components/header :: header}"></div>
+
 
 <!-- Título -->
 <div th:replace="~{components/pageHeader :: pageHeader(

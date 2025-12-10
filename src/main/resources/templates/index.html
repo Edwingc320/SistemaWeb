@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 
 <head>
     <meta charset="utf-8">
@@ -32,7 +33,8 @@
 
 <body>
     <!-- Components Header Start -->
-    <div th:replace="components/header :: header"></div>
+    <div th:replace="~{components/header :: header}"></div>
+
     <!-- Header End -->
 
 
@@ -293,6 +295,7 @@
     <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
+     
     <script src="js/main.js"></script>
 </body>
 

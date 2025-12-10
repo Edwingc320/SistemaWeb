@@ -1,68 +1,71 @@
-<!-- Header Start -->
-<header id="header" th:fragment="header">
-    <div class="container-fluid" >
-        <div class="row">
-            <div class="col-lg-3 bg-secondary d-none d-lg-block">
-                <a href="/indexF" class="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
-                    <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
-                </a>
-            </div>
-            <div class="col-lg-9">
-                <div class="row bg-white border-bottom d-none d-lg-flex">
-                    <div class="col-lg-7 text-left">
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-3">
-                            <i class="fa fa-envelope text-primary mr-2"></i>
-                            <small>correo@example.com</small>
-                        </div>
-                        <div class="h-100 d-inline-flex align-items-center py-2 px-2">
-                            <i class="fa fa-phone-alt text-primary mr-2"></i>
-                            <small>+telefono</small>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 text-right">
-                        <div class="d-inline-flex align-items-center p-2">
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary btn-sm-square mr-2" href="">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <nav class="navbar navbar-expand-lg bg-white navbar-light p-0">
-                    <a href="indexF" class="navbar-brand d-block d-lg-none">
-                        <h1 class="m-0 display-4 text-primary text-uppercase">TESSFP E.R</h1>
-                    </a>
-                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                            <a href="/indexF" class="nav-item nav-link active">Home</a>
-                            <a href="/indexGrupo" class="nav-item nav-link">Añadir Grupos</a>
-                            <a href="/calificacionesGrupo" class="nav-item nav-link">Cargar Calificaciones</a>
-                            <a href="/calificacionesIndividual" class="nav-item nav-link">Gestionar grupos</a> 
-                            <a href="/añadirPeriodo" class="nav-item nav-link">Añadir Periodos</a> 
-                            <a href="/agregarProfesores" class="nav-item nav-link">Añadir Profesores</a>  
-                            <a href="/crearUsuario" class="nav-item nav-link">Crear Usuario</a>
-                            <a href="/gestionarAlumnos" class="nav-item nav-link">Gestionar Alumnos</a>
-                            
-                            <a href="" class="btn btn-primary mr-3 d-none d-lg-block"></a>
-                        </div>
-                    </div>
-                </nav>
-            </div>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <a class="navbar-brand" href="/indexF">Sistema Web</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+
+            <ul class="navbar-nav mr-auto">
+
+                <!-- HOME -->
+                <li id="menuHome" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/indexF">Home</a>
+                </li>
+
+                <!-- ADMIN - JEFE DIVISIÓN -->
+                <li id="menuIndexGrupo" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/indexGrupo">Añadir grupos</a>
+                </li>
+
+                <li id="menuCalGrupo" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/calificacionesGrupo">Cargar calificaciones</a>
+                </li>
+
+                <!-- ADMIN - MAESTRO - TUTOR - JEFE DIVISIÓN -->
+                <li id="menuCalIndividual" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/calificacionesIndividual">Gestionar grupos</a>
+                </li>
+
+                <!-- ADMIN - JEFE DIVISIÓN -->
+                <li id="menuPeriodo" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/anadirPeriodo">Añadir periodos</a>
+                </li>
+
+                <li id="menuProfesores" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/agregarProfesores">Añadir profesores</a>
+                </li>
+
+                <li id="menuUsuarios" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/usuario/Usuarios">Usuarios</a>
+                </li>
+
+                <!-- ADMIN - MAESTRO - TUTOR - JEFE DIVISIÓN -->
+                <li id="menuGestionAlumnos" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/gestionarAlumnos">Gestionar alumnos</a>
+                </li>
+
+                <!-- Tus menús anteriores (si aún los quieres conservar) -->
+                <li id="menuUsuario" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/usuario/inicio">Inicio Usuario</a>
+                </li>
+
+                <li id="menuMaestro" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/maestro/lista">Panel Maestro</a>
+                </li>
+
+                <li id="menuAdmin" class="nav-item" style="display:none;">
+                    <a class="nav-link" href="/admin/dashboard">Administración</a>
+                </li>
+
+            </ul>
+
+            <button class="btn btn-danger" onclick="logout()">Cerrar sesión</button>
         </div>
-    </div>
+    </nav>
 </header>
-<!-- Header End -->
+
+<script src="/js/main.js"></script>

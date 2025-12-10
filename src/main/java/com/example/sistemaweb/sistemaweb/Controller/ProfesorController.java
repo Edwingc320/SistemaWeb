@@ -31,4 +31,6 @@ public class ProfesorController {
         
         return ResponseEntity.ok("Profesor creado con ID: " + profesorGuardado.getIdProfesor());
     }
+
+    
 }

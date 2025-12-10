@@ -3,6 +3,7 @@ package com.example.sistemaweb.sistemaweb.Entities;
 
 
 import java.io.Serializable;
+import java.util.Objects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
@@ -25,4 +26,19 @@ public class AlumnoGrupoId implements Serializable {
         this.idAlumno = idAlumno;
         this.idGrupo = idGrupo;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AlumnoGrupoId)) return false;
+        AlumnoGrupoId that = (AlumnoGrupoId) o;
+        return Objects.equals(idAlumno, that.idAlumno) &&
+            Objects.equals(idGrupo, that.idGrupo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idAlumno, idGrupo);
+    }
+
 }

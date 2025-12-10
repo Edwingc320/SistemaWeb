@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html 
+ xmlns:th="http://www.thymeleaf.org" 
+ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 
 <head>
     <meta charset="utf-8">
@@ -28,12 +31,13 @@
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 
 <body>
     <!-- Components Header Start -->
-    <div th:replace="components/header :: header"></div>
+     <div th:replace="~{components/header :: header}"></div>
+
     <!-- Header End -->
 
 
@@ -96,47 +100,58 @@
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script th:src="@{/js/main.js}"></script>
 
     <script>
-        // Manejo del envío del formulario de Profesor
-        document.getElementById("profesorForm").addEventListener("submit", function (event) {
-            event.preventDefault();
+    document.getElementById("profesorForm").addEventListener("submit", function (event) {
+        event.preventDefault();
 
-            const nombre = document.getElementById("nombre").value.trim();
-            const apellidoPaterno = document.getElementById("apellidoPaterno").value.trim();
-            const apellidoMaterno = document.getElementById("apellidoMaterno").value.trim();
-            const clave = document.getElementById("clave").value.trim();
+        const nombre = document.getElementById("nombre").value.trim();
+        const apellidoPaterno = document.getElementById("apellidoPaterno").value.trim();
+        const apellidoMaterno = document.getElementById("apellidoMaterno").value.trim();
+        const clave = document.getElementById("clave").value.trim();
 
-            if (!nombre || !apellidoPaterno || !apellidoMaterno || !clave) {
-                alert("Por favor, completa todos los campos.");
-                return;
+        if (!nombre || !apellidoPaterno || !apellidoMaterno || !clave) {
+            alert("Por favor, completa todos los campos.");
+            return;
+        }
+
+        // ✅ AQUÍ ESTABA EL ERROR
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Sesión inválida, vuelve a iniciar sesión.");
+            return;
+        }
+
+        fetch("/profesor/agregarProfesor", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Bearer " + token   // ✅ AQUÍ VA EL JWT REAL
+            },
+            body: `nombre=${encodeURIComponent(nombre)}&apellidoPaterno=${encodeURIComponent(apellidoPaterno)}&apellidoMaterno=${encodeURIComponent(apellidoMaterno)}&clave=${encodeURIComponent(clave)}`
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("No autorizado");
             }
-
-            // Enviar los datos al servidor
-            fetch("/profesor/agregarProfesor", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `nombre=${encodeURIComponent(nombre)}&apellidoPaterno=${encodeURIComponent(apellidoPaterno)}&apellidoMaterno=${encodeURIComponent(apellidoMaterno)}&clave=${encodeURIComponent(clave)}`
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error al crear el profesor.");
-                    }
-                    return response.text();
-                })
-                .then(message => {
-                    alert("Profesor creado exitosamente: " + message);
-                    document.getElementById("profesorForm").reset();
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Ocurrió un error al crear el profesor.");
-                });
+            return response.text();
+        })
+        .then(message => {
+            alert(message);
+            document.getElementById("profesorForm").reset();
+        })
+        .catch(error => {
+            alert("Token inválido o expirado");
+            console.error(error);
         });
+    });
     </script>
+
+
+
+
 </body>
 
 </html>

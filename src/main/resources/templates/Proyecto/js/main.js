@@ -1,5 +1,68 @@
 (function ($) {
     "use strict";
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            console.warn("Sin token. Menú oculto.");
+            return;
+        }
+
+        let payload;
+        try {
+            payload = JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+            console.error("Error leyendo token");
+            return;
+        }
+
+        const rol = payload.rol?.replace("ROLE_", "") || "USUARIO";
+
+        console.log("ROL DETECTADO:", rol);
+
+        // ********** HOME (todos) **********
+        document.getElementById("menuHome").style.display = "block";
+
+        // ********** ADMIN + JEFE DIVISION **********
+        if (rol === "ADMIN" || rol === "JEFE_DIVISION") {
+            document.getElementById("menuHome").style.display = "block";
+            document.getElementById("menuIndexGrupo").style.display = "block";
+            document.getElementById("menuCalGrupo").style.display = "block";
+            document.getElementById("menuPeriodo").style.display = "block";
+            document.getElementById("menuProfesores").style.display = "block";
+            document.getElementById("menuUsuarios").style.display = "block";
+        }
+
+        // ********** ADMIN + MAESTRO + TUTOR + JEFE DIVISION **********
+        if (["ADMIN", "MAESTRO", "TUTOR", "JEFE_DIVISION"].includes(rol)) {
+            document.getElementById("menuHome").style.display = "block";
+            document.getElementById("menuCalIndividual").style.display = "block";
+            document.getElementById("menuGestionAlumnos").style.display = "block";
+        }
+
+        // ********** MAESTRO **********
+        if (rol === "MAESTRO") {
+             document.getElementById("menuHome").style.display = "block";
+            document.getElementById("menuCalGrupo").style.display = "block";
+        }
+
+        // ********** TUTOR **********
+        // No tiene calificacionesGrupo
+        if (rol === "TUTOR") {
+             document.getElementById("menuHome").style.display = "block";
+            document.getElementById("menuCalGrupo").style.display = "block";
+        }
+    });
+
+
+    function logout() {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/login";
+    }
+
     
     // Dropdown on mouse hover
     $(document).ready(function () {
@@ -125,4 +188,3 @@
     });
     
 })(jQuery);
-

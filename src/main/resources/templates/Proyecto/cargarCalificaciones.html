@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 
 <head>
     <meta charset="utf-8">
@@ -78,7 +79,8 @@
 <body>
 
     <!-- Components Header Start -->
-    <div th:replace="components/header :: header"></div>
+    <div th:replace="~{components/header :: header}"></div>
+
     <!-- Header End -->
 
     <!-- Components Page Header Start -->
