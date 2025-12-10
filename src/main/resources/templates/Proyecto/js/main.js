@@ -1,3 +1,8 @@
+function logout() {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/login";
+    }
 (function ($) {
     "use strict";
 
@@ -57,11 +62,7 @@
     });
 
 
-    function logout() {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = "/login";
-    }
+    
 
     
     // Dropdown on mouse hover
